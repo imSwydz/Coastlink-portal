@@ -272,6 +272,53 @@
       const btn = document.getElementById('loginBtn');
       btn.innerText = btn.innerText === 'Log in' ? 'Log out' : 'Log in';
     };
+
+    /* Facility Search */
+    function renderResults(list) {
+      const section = document.getElementById('resultsSection');
+      const container = document.getElementById('resultsContainer');
+      container.innerHTML = '';
+
+      if (list.length === 0) {
+        container.innerHTML = '<p style="color: #64748b;">No matching facilities found.</p>';
+      } else {
+        list.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'list-item';
+          div.innerHTML = `
+            <div>
+              <strong>${item.name}</strong>
+              <div style="font-size: 0.85rem; color: #64748b;">${item.suburb} &bull; Capacity: ${item.capacity}</div>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      }
+      section.style.display = 'block';
+    }
+
+    document.getElementById('searchForm').onsubmit = (e) => {
+      e.preventDefault();
+      const term = document.getElementById('searchInput').value.toLowerCase();
+      const suburb = document.getElementById('suburbSelect').value;
+      const minCap = parseInt(document.getElementById('capacitySelect').value, 10);
+
+      const filtered = facilities.filter(item => {
+        const matchesTerm = !term || item.name.toLowerCase().includes(term) || item.type.toLowerCase().includes(term);
+        const matchesSuburb = !suburb || item.suburb === suburb;
+        const matchesCap = !minCap || item.capacity >= minCap;
+        return matchesTerm && matchesSuburb && matchesCap;
+      });
+
+      renderResults(filtered);
+    };
+
+    document.getElementById('showAllBtn').onclick = () => renderResults(facilities);
+
+    function quickFilter(type) {
+      document.getElementById('searchInput').value = type;
+      renderResults(facilities.filter(item => item.type === type));
+    }
   </script>
 </body>
 </html>
