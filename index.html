@@ -256,6 +256,8 @@
       const targetNav = Array.from(document.querySelectorAll('.nav-tab')).find(t => t.dataset.tab === tabId);
       if (targetNav) targetNav.classList.add('active');
       if (url) document.getElementById('urlDisplay').innerText = url;
+
+      if (tabId === 'tab-bookings') renderBookings();
     }
 
     document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -290,11 +292,19 @@
               <strong>${item.name}</strong>
               <div style="font-size: 0.85rem; color: #64748b;">${item.suburb} &bull; Capacity: ${item.capacity}</div>
             </div>
+            <button class="btn-dark" onclick="bookFacility('${item.name}')">Book</button>
           `;
           container.appendChild(div);
         });
       }
       section.style.display = 'block';
+    }
+
+    function bookFacility(name) {
+      const date = document.getElementById('dateInput').value || 'Upcoming';
+      userBookings.push({ id: Date.now(), facility: name, date: date });
+      alert(`Booking created for ${name} on ${date}.`);
+      switchTab('tab-bookings', 'coastlink.nsw.gov.au/my-bookings');
     }
 
     document.getElementById('searchForm').onsubmit = (e) => {
@@ -318,6 +328,35 @@
     function quickFilter(type) {
       document.getElementById('searchInput').value = type;
       renderResults(facilities.filter(item => item.type === type));
+    }
+
+    /* Bookings Management */
+    function renderBookings() {
+      const container = document.getElementById('bookingsList');
+      container.innerHTML = '';
+
+      if (userBookings.length === 0) {
+        container.innerHTML = '<p style="color: #64748b;">No active bookings found.</p>';
+        return;
+      }
+
+      userBookings.forEach(b => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = `
+          <div>
+            <strong>${b.facility}</strong>
+            <div style="font-size: 0.85rem; color: #64748b;">Date: ${b.date}</div>
+          </div>
+          <button class="btn-danger" onclick="cancelBooking(${b.id})">Cancel</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function cancelBooking(id) {
+      userBookings = userBookings.filter(b => b.id !== id);
+      renderBookings();
     }
   </script>
 </body>
