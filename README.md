@@ -17,19 +17,32 @@ dependencies required.
 
 ## Running it
 
-No build tools needed — just open `index.html` in a browser, or serve it locally:
+This now has a small Node/Express backend serving the front-end and a REST API.
 
 ```bash
-python3 -m http.server 8000
+npm install
+npm start
 ```
 
-Then visit `http://localhost:8000`.
+Then visit `http://localhost:3000`.
+
+### API
+
+| Method | Endpoint             | Description                          |
+|--------|-----------------------|---------------------------------------|
+| GET    | `/api/facilities`     | List facilities (filter by `q`, `suburb`, `minCapacity`) |
+| GET    | `/api/bookings`       | List current bookings                 |
+| POST   | `/api/bookings`       | Create a booking (`facility`, `date`) |
+| DELETE | `/api/bookings/:id`   | Cancel a booking                      |
+| POST   | `/api/reports`        | Submit a maintenance report (`facility`, `category`, `details`), returns a `ticketId` |
+| GET    | `/api/reports`        | List submitted reports                |
 
 ## Status
 
-Data is currently held in-memory on the client (`facilities` and `userBookings` arrays in
-`index.html`). Next step is connecting this to the database schema from the Database Design
-task before starting the Maintenance System Component.
+Data is currently held in-memory on the server (facilities, bookings, and reports reset on
+restart). The front-end (`public/index.html`) still uses its own local sample data rather than
+calling these endpoints — wiring it up to the API is the next step, followed by connecting the
+API to the real database schema from the Database Design task.
 
 ## Team LFL
 

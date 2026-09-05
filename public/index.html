@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoastLink Council - Facility Portal</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body { margin: 0; padding: 2rem 1rem; background: #eaedf0; color: #1e293b; }
+    .window { max-width: 900px; margin: 0 auto; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; }
+
+    /* Browser Bar */
+    .browser-bar { background: #f1f5f9; padding: 8px 16px; border-bottom: 1px solid #cbd5e1; display: flex; align-items: center; gap: 12px; }
+    .dots { display: flex; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #cbd5e1; }
+    .url-input { background: #fff; border: 1px solid #cbd5e1; border-radius: 20px; padding: 4px 16px; width: 100%; font-size: 13px; color: #64748b; }
+
+    /* Header */
+    header { padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+    .brand { display: flex; align-items: center; gap: 1rem; }
+    .logo-box { width: 50px; height: 50px; border: 1px solid #94a3b8; border-radius: 4px; display: grid; place-items: center; font-size: 11px; color: #64748b; font-weight: bold; }
+    .brand-text h1 { margin: 0; font-size: 1.25rem; }
+    .brand-text p { margin: 2px 0 0; font-size: 0.875rem; color: #64748b; }
+    .header-actions { display: flex; gap: 12px; align-items: center; }
+    .text-size { border: 1px solid #94a3b8; padding: 6px 12px; border-radius: 4px; font-size: 13px; background: #fff; }
+    .text-size span { cursor: pointer; padding: 0 3px; }
+    .btn-login { border: 1px solid #94a3b8; padding: 6px 16px; border-radius: 4px; font-size: 13px; background: #fff; cursor: pointer; }
+
+    /* Nav */
+    nav { display: flex; border-bottom: 2px solid #cbd5e1; padding: 0 1.5rem; }
+    .nav-tab { padding: 10px 16px; text-decoration: none; color: #334155; font-size: 0.9rem; font-weight: 500; border: 1px solid transparent; cursor: pointer; }
+    .nav-tab.active { background: #e2e8f0; border: 1px solid #cbd5e1; border-bottom-color: #e2e8f0; font-weight: bold; }
+
+    /* Main Container & Sections */
+    main { padding: 2rem 1.5rem; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .page-title { font-family: Georgia, serif; font-size: 1.8rem; margin: 0 0 0.5rem; }
+    .subtitle { margin: 0 0 1.5rem; color: #475569; font-size: 0.95rem; }
+
+    /* Search & Forms */
+    .card-box { border: 1px solid #94a3b8; border-radius: 6px; padding: 1.5rem; margin-bottom: 2rem; }
+    .field-group { margin-bottom: 1.25rem; }
+    .field-group label { display: block; font-weight: bold; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .input-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    input, select, textarea { width: 100%; padding: 0.65rem 0.75rem; border: 1px solid #94a3b8; border-radius: 4px; font-size: 0.9rem; }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* Buttons */
+    .button-row { display: flex; gap: 1rem; }
+    .btn-dark { background: #334155; color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: bold; cursor: pointer; }
+    .btn-light { background: #e2e8f0; color: #0f172a; border: 1px solid #94a3b8; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: bold; cursor: pointer; }
+    .btn-danger { background: #ef4444; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; }
+
+    /* Results / List Items */
+    .list-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 0.75rem; background: #fff; }
+    .tasks-heading { font-weight: bold; font-size: 0.95rem; margin-bottom: 0.75rem; }
+    .tasks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+    .task-card { border: 1px solid #cbd5e1; border-radius: 6px; padding: 1.25rem; cursor: pointer; }
+    .task-card:hover { background: #f8fafc; }
+    .task-card h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+    .task-card p { margin: 0; font-size: 0.85rem; color: #475569; }
+
+    /* Alert Banner */
+    .alert-box { background: #fef3c7; border: 1px solid #d97706; border-left: 6px solid #b45309; border-radius: 4px; padding: 1rem 1.25rem; margin-bottom: 2rem; font-size: 0.9rem; }
+    .faq-item { border-bottom: 1px solid #e2e8f0; padding: 1rem 0; cursor: pointer; }
+    .faq-question { font-weight: bold; }
+    .faq-answer { display: none; margin-top: 0.5rem; color: #475569; font-size: 0.9rem; }
+
+    /* Footer */
+    footer { border-top: 1px solid #cbd5e1; padding: 1.25rem 1.5rem; font-size: 0.85rem; color: #475569; }
+  </style>
+</head>
+<body>
+
+  <div class="window" id="appWindow">
+    <div class="browser-bar">
+      <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      <div class="url-input" id="urlDisplay">coastlink.nsw.gov.au/facilities</div>
+    </div>
+
+    <header>
+      <div class="brand">
+        <div class="logo-box">LOGO</div>
+        <div class="brand-text">
+          <h1>CoastLink Council</h1>
+          <p>Facility bookings and maintenance</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="text-size">
+          Text size
+          <span onclick="setTextSize('14px')">A</span>
+          <span onclick="setTextSize('16px')"><b>A</b></span>
+          <span onclick="setTextSize('18px')"><strong>A</strong></span>
+        </span>
+        <button class="btn-login" id="loginBtn">Log in</button>
+      </div>
+    </header>
+
+    <nav>
+      <a class="nav-tab active" data-tab="tab-book" data-url="coastlink.nsw.gov.au/facilities">Book a facility</a>
+      <a class="nav-tab" data-tab="tab-bookings" data-url="coastlink.nsw.gov.au/my-bookings">My bookings</a>
+      <a class="nav-tab" data-tab="tab-report" data-url="coastlink.nsw.gov.au/report">Report a problem</a>
+      <a class="nav-tab" data-tab="tab-help" data-url="coastlink.nsw.gov.au/help">Help</a>
+    </nav>
+
+    <main>
+      <section id="tab-book" class="tab-content active">
+        <h2 class="page-title">Book a Council facility</h2>
+        <p class="subtitle">Halls, meeting rooms, sports courts and community equipment.</p>
+
+        <form id="searchForm" class="card-box">
+          <div class="field-group">
+            <label for="searchInput">What do you need?</label>
+            <input type="text" id="searchInput" placeholder="Search halls, rooms, courts...">
+          </div>
+
+          <div class="input-row">
+            <div class="field-group">
+              <label for="suburbSelect">Suburb</label>
+              <select id="suburbSelect">
+                <option value="">Any suburb</option>
+                <option value="North Beach">North Beach</option>
+                <option value="Bayview">Bayview</option>
+                <option value="South Point">South Point</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="dateInput">Date</label>
+              <input type="date" id="dateInput">
+            </div>
+            <div class="field-group">
+              <label for="capacitySelect">Number of people</label>
+              <select id="capacitySelect">
+                <option value="0">Any</option>
+                <option value="20">1 - 20</option>
+                <option value="50">20 - 50</option>
+                <option value="100">50+</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button type="submit" class="btn-dark">Search facilities</button>
+            <button type="button" class="btn-light" id="showAllBtn">Show all facilities</button>
+          </div>
+        </form>
+
+        <div id="resultsSection" style="display:none; margin-bottom: 2rem;">
+          <div class="tasks-heading">Search Results</div>
+          <div id="resultsContainer"></div>
+        </div>
+
+        <div class="tasks-heading">Or start from a common task</div>
+        <div class="tasks-grid">
+          <div class="task-card" onclick="quickFilter('Hall')">
+            <h3>Book a community hall</h3>
+            <p>For meetings, parties and classes.</p>
+          </div>
+          <div class="task-card" onclick="switchTab('tab-report', 'coastlink.nsw.gov.au/report')">
+            <h3>Report a problem</h3>
+            <p>Broken lights, taps, doors or equipment.</p>
+          </div>
+          <div class="task-card" onclick="switchTab('tab-bookings', 'coastlink.nsw.gov.au/my-bookings')">
+            <h3>Check a booking</h3>
+            <p>View, change or cancel what you booked.</p>
+          </div>
+        </div>
+
+        <div class="alert-box">
+          <strong>Temporary closures this week</strong>
+          Bayview Community Hall is closed Mon 8 – Wed 10 Sept for floor repairs.
+        </div>
+      </section>
+
+      <section id="tab-bookings" class="tab-content">
+        <h2 class="page-title">My Bookings</h2>
+        <p class="subtitle">Review and manage your current reservations.</p>
+        <div id="bookingsList"></div>
+      </section>
+
+      <section id="tab-report" class="tab-content">
+        <h2 class="page-title">Report a Problem</h2>
+        <p class="subtitle">Notify the council of broken lights, equipment, or facility issues.</p>
+        <form id="reportForm" class="card-box">
+          <div class="field-group">
+            <label for="reportFacility">Select Facility</label>
+            <select id="reportFacility" required>
+              <option value="">Choose a facility...</option>
+              <option value="Bayview Community Hall">Bayview Community Hall</option>
+              <option value="North Beach Activity Room">North Beach Activity Room</option>
+              <option value="South Point Tennis Court">South Point Tennis Court</option>
+              <option value="Civic Pavilion">Civic Pavilion</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="reportType">Issue Category</label>
+            <select id="reportType" required>
+              <option value="Electrical / Lighting">Electrical / Lighting</option>
+              <option value="Plumbing / Taps">Plumbing / Taps</option>
+              <option value="Locks / Access">Locks / Access</option>
+              <option value="Cleaning / Damage">Cleaning / Damage</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="reportDetails">Details</label>
+            <textarea id="reportDetails" placeholder="Describe the issue in detail..." required></textarea>
+          </div>
+          <button type="submit" class="btn-dark">Submit Report</button>
+        </form>
+      </section>
+
+      <section id="tab-help" class="tab-content">
+        <h2 class="page-title">Frequently Asked Questions</h2>
+        <p class="subtitle">Find answers to common questions about using Council spaces.</p>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">&#9656; How far in advance can I make a reservation?</div>
+          <div class="faq-answer">Bookings open up to 6 months in advance. Minimum booking notice is 48 business hours.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">&#9656; Do I need insurance to book a venue?</div>
+          <div class="faq-answer">Commercial users and public events require Public Liability Insurance (minimum $20M). Private events usually do not.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">&#9656; What is the cancellation policy?</div>
+          <div class="faq-answer">Full refunds are provided for cancellations made at least 7 days prior to the booking date.</div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span><strong>Need help?</strong> Phone (02) 4200 0000, Monday to Friday 8:30am–4:30pm</span>
+    </footer>
+  </div>
+
+  <script>
+    const facilities = [
+      { name: "Bayview Community Hall", type: "Hall", suburb: "Bayview", capacity: 80 },
+      { name: "North Beach Activity Room", type: "Room", suburb: "North Beach", capacity: 20 },
+      { name: "South Point Tennis Court", type: "Court", suburb: "South Point", capacity: 10 },
+      { name: "Civic Pavilion", type: "Hall", suburb: "North Beach", capacity: 150 }
+    ];
+
+    let userBookings = [
+      { id: 1, facility: "South Point Tennis Court", date: "2026-09-12" }
+    ];
+
+    /* Navigation & Tabs */
+    function switchTab(tabId, url) {
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      const targetNav = Array.from(document.querySelectorAll('.nav-tab')).find(t => t.dataset.tab === tabId);
+      if (targetNav) targetNav.classList.add('active');
+      if (url) document.getElementById('urlDisplay').innerText = url;
+
+      if (tabId === 'tab-bookings') renderBookings();
+    }
+
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.onclick = () => switchTab(tab.dataset.tab, tab.dataset.url);
+    });
+
+    /* Accessibility Text Size */
+    function setTextSize(size) {
+      document.getElementById('appWindow').style.fontSize = size;
+    }
+
+    /* Auth demo */
+    document.getElementById('loginBtn').onclick = () => {
+      const btn = document.getElementById('loginBtn');
+      btn.innerText = btn.innerText === 'Log in' ? 'Log out' : 'Log in';
+    };
+
+    /* Facility Search */
+    function renderResults(list) {
+      const section = document.getElementById('resultsSection');
+      const container = document.getElementById('resultsContainer');
+      container.innerHTML = '';
+
+      if (list.length === 0) {
+        container.innerHTML = '<p style="color: #64748b;">No matching facilities found.</p>';
+      } else {
+        list.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'list-item';
+          div.innerHTML = `
+            <div>
+              <strong>${item.name}</strong>
+              <div style="font-size: 0.85rem; color: #64748b;">${item.suburb} &bull; Capacity: ${item.capacity}</div>
+            </div>
+            <button class="btn-dark" onclick="bookFacility('${item.name}')">Book</button>
+          `;
+          container.appendChild(div);
+        });
+      }
+      section.style.display = 'block';
+    }
+
+    function bookFacility(name) {
+      const date = document.getElementById('dateInput').value || 'Upcoming';
+      userBookings.push({ id: Date.now(), facility: name, date: date });
+      alert(`Booking created for ${name} on ${date}.`);
+      switchTab('tab-bookings', 'coastlink.nsw.gov.au/my-bookings');
+    }
+
+    document.getElementById('searchForm').onsubmit = (e) => {
+      e.preventDefault();
+      const term = document.getElementById('searchInput').value.toLowerCase();
+      const suburb = document.getElementById('suburbSelect').value;
+      const minCap = parseInt(document.getElementById('capacitySelect').value, 10);
+
+      const filtered = facilities.filter(item => {
+        const matchesTerm = !term || item.name.toLowerCase().includes(term) || item.type.toLowerCase().includes(term);
+        const matchesSuburb = !suburb || item.suburb === suburb;
+        const matchesCap = !minCap || item.capacity >= minCap;
+        return matchesTerm && matchesSuburb && matchesCap;
+      });
+
+      renderResults(filtered);
+    };
+
+    document.getElementById('showAllBtn').onclick = () => renderResults(facilities);
+
+    function quickFilter(type) {
+      document.getElementById('searchInput').value = type;
+      renderResults(facilities.filter(item => item.type === type));
+    }
+
+    /* Bookings Management */
+    function renderBookings() {
+      const container = document.getElementById('bookingsList');
+      container.innerHTML = '';
+
+      if (userBookings.length === 0) {
+        container.innerHTML = '<p style="color: #64748b;">No active bookings found.</p>';
+        return;
+      }
+
+      userBookings.forEach(b => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = `
+          <div>
+            <strong>${b.facility}</strong>
+            <div style="font-size: 0.85rem; color: #64748b;">Date: ${b.date}</div>
+          </div>
+          <button class="btn-danger" onclick="cancelBooking(${b.id})">Cancel</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function cancelBooking(id) {
+      userBookings = userBookings.filter(b => b.id !== id);
+      renderBookings();
+    }
+
+    /* Problem Report */
+    document.getElementById('reportForm').onsubmit = (e) => {
+      e.preventDefault();
+      alert('Maintenance report submitted successfully. Ticket ID: #' + Math.floor(10000 + Math.random() * 90000));
+      e.target.reset();
+    };
+
+    /* FAQ Collapsible */
+    function toggleFaq(el) {
+      const answer = el.querySelector('.faq-answer');
+      const isVisible = answer.style.display === 'block';
+      answer.style.display = isVisible ? 'none' : 'block';
+    }
+  </script>
+</body>
+</html>

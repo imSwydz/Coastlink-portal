@@ -1,0 +1,12 @@
+{
+  "name": "coastlink-portal",
+  "version": "0.1.0",
+  "description": "Prototype backend for CoastLink Council's facility booking and maintenance system",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.22.2"
+  }
+}
