@@ -358,6 +358,20 @@
       userBookings = userBookings.filter(b => b.id !== id);
       renderBookings();
     }
+
+    /* Problem Report */
+    document.getElementById('reportForm').onsubmit = (e) => {
+      e.preventDefault();
+      alert('Maintenance report submitted successfully. Ticket ID: #' + Math.floor(10000 + Math.random() * 90000));
+      e.target.reset();
+    };
+
+    /* FAQ Collapsible */
+    function toggleFaq(el) {
+      const answer = el.querySelector('.faq-answer');
+      const isVisible = answer.style.display === 'block';
+      answer.style.display = isVisible ? 'none' : 'block';
+    }
   </script>
 </body>
 </html>
