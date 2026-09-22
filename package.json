@@ -9,9 +9,11 @@
     "test": "node --test"
   },
   "dependencies": {
-    "express": "^4.22.2"
+    "express": "^4.22.2",
+    "nsw-design-system": "^3.27.0"
   },
   "devDependencies": {
+    "sass": "^1.104.1",
     "typescript": "^7.0.2",
     "vite": "^8.3.0"
   }

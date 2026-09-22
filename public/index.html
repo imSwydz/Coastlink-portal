@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CoastLink Council - Facility Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Icons&family=Public+Sans:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="window" id="appWindow">
@@ -43,47 +49,45 @@
         </div>
       </header>
 
-      <nav role="tablist" aria-label="Portal sections">
-        <button
-          class="nav-tab active"
-          type="button"
-          role="tab"
-          aria-selected="true"
-          tabindex="0"
-          data-tab="tab-book"
-        >
-          Book a facility
-        </button>
-        <button
-          class="nav-tab"
-          type="button"
-          role="tab"
-          aria-selected="false"
-          tabindex="0"
-          data-tab="tab-bookings"
-        >
-          My bookings
-        </button>
-        <button
-          class="nav-tab"
-          type="button"
-          role="tab"
-          aria-selected="false"
-          tabindex="0"
-          data-tab="tab-report"
-        >
-          Report a problem
-        </button>
-        <button
-          class="nav-tab"
-          type="button"
-          role="tab"
-          aria-selected="false"
-          tabindex="0"
-          data-tab="tab-help"
-        >
-          Help
-        </button>
+      <nav class="nsw-tabs" aria-label="Portal sections">
+        <ul class="nsw-tabs__list">
+          <li>
+            <a
+              id="tab-link-book"
+              class="nsw-tabs__link active"
+              href="#tab-book"
+              data-tab="tab-book"
+              >Book a facility</a
+            >
+          </li>
+          <li>
+            <a
+              id="tab-link-bookings"
+              class="nsw-tabs__link"
+              href="#tab-bookings"
+              data-tab="tab-bookings"
+              >My bookings</a
+            >
+          </li>
+          <li>
+            <a
+              id="tab-link-report"
+              class="nsw-tabs__link"
+              href="#tab-report"
+              data-tab="tab-report"
+              >Report a problem</a
+            >
+          </li>
+          <li>
+            <a
+              id="tab-link-help"
+              class="nsw-tabs__link"
+              href="#tab-help"
+              data-tab="tab-help"
+              >Help</a
+            >
+          </li>
+        </ul>
       </nav>
 
       <main>
@@ -92,38 +96,53 @@
           <p class="subtitle">
             Halls, meeting rooms, sports courts and community equipment.
           </p>
-          <form id="searchForm" class="card-box">
-            <div class="field-group">
-              <label for="searchInput">What do you need?</label>
+          <form id="searchForm" class="nsw-form card-box">
+            <div class="nsw-form__group">
+              <label class="nsw-form__label" for="searchInput"
+                >What do you need?</label
+              >
               <input
                 type="text"
                 id="searchInput"
+                class="nsw-form__input"
                 placeholder="Search halls, rooms, courts..."
               />
             </div>
             <div class="input-row">
-              <div class="field-group">
-                <label for="suburbSelect">Suburb</label>
-                <select id="suburbSelect">
+              <div class="nsw-form__group">
+                <label class="nsw-form__label" for="suburbSelect">Suburb</label>
+                <select id="suburbSelect" class="nsw-form__input">
                   <option value="">Any suburb</option>
                   <option value="North Beach">North Beach</option>
                   <option value="Bayview">Bayview</option>
                   <option value="South Point">South Point</option>
                 </select>
               </div>
-              <div class="field-group">
-                <label for="dateInput">Date</label>
+              <div class="nsw-form__group">
+                <label
+                  class="nsw-form__label nsw-form__required"
+                  for="dateInput"
+                  >Date</label
+                >
                 <input
                   type="date"
                   id="dateInput"
+                  class="nsw-form__input"
                   required
                   aria-describedby="dateError"
                 />
-                <span class="field-error" id="dateError" role="alert"></span>
+                <span
+                  class="nsw-form__helper nsw-form__helper--error"
+                  id="dateError"
+                  role="alert"
+                  hidden
+                ></span>
               </div>
-              <div class="field-group">
-                <label for="capacitySelect">Number of people</label>
-                <select id="capacitySelect">
+              <div class="nsw-form__group">
+                <label class="nsw-form__label" for="capacitySelect"
+                  >Number of people</label
+                >
+                <select id="capacitySelect" class="nsw-form__input">
                   <option value="0">Any</option>
                   <option value="20">1 - 20</option>
                   <option value="50">20 - 50</option>
@@ -132,10 +151,18 @@
               </div>
             </div>
             <div class="button-row">
-              <button type="submit" class="btn-dark" id="searchButton">
+              <button
+                type="submit"
+                class="nsw-button nsw-button--dark"
+                id="searchButton"
+              >
                 Search facilities
               </button>
-              <button type="button" class="btn-light" id="showAllBtn">
+              <button
+                type="button"
+                class="nsw-button nsw-button--light-outline"
+                id="showAllBtn"
+              >
                 Show all facilities
               </button>
             </div>
@@ -155,30 +182,47 @@
           </div>
           <div class="tasks-heading">Or start from a common task</div>
           <div class="tasks-grid">
-            <button class="task-card" type="button" data-quick-filter="Hall">
-              <h3>Book a community hall</h3>
-              <p>For meetings, parties and classes.</p>
+            <button
+              class="task-card nsw-card"
+              type="button"
+              data-quick-filter="Hall"
+            >
+              <span class="nsw-card__content"
+                ><h3>Book a community hall</h3>
+                <p>For meetings, parties and classes.</p></span
+              >
             </button>
             <button
-              class="task-card"
+              class="task-card nsw-card"
               type="button"
               data-switch-tab="tab-report"
             >
-              <h3>Report a problem</h3>
-              <p>Broken lights, taps, doors or equipment.</p>
+              <span class="nsw-card__content"
+                ><h3>Report a problem</h3>
+                <p>Broken lights, taps, doors or equipment.</p></span
+              >
             </button>
             <button
-              class="task-card"
+              class="task-card nsw-card"
               type="button"
               data-switch-tab="tab-bookings"
             >
-              <h3>Check a booking</h3>
-              <p>View, change or cancel what you booked.</p>
+              <span class="nsw-card__content"
+                ><h3>Check a booking</h3>
+                <p>View, change or cancel what you booked.</p></span
+              >
             </button>
           </div>
-          <div class="alert-box">
-            <strong>Temporary closures this week</strong> Bayview Community Hall
-            is closed Mon 8 – Wed 10 Sept for floor repairs.
+          <div class="nsw-in-page-alert nsw-in-page-alert--warning">
+            <span
+              class="nsw-in-page-alert__icon nsw-material-icons"
+              aria-hidden="true"
+              >warning</span
+            >
+            <div class="nsw-in-page-alert__content">
+              <strong>Temporary closures this week</strong> Bayview Community
+              Hall is closed Mon 8 - Wed 10 Sept for floor repairs.
+            </div>
           </div>
         </section>
 
@@ -193,10 +237,16 @@
           <p class="subtitle">
             Notify the council of broken lights, equipment, or facility issues.
           </p>
-          <form id="reportForm" class="card-box">
-            <div class="field-group">
-              <label for="reportFacility">Select Facility</label
-              ><select id="reportFacility" required>
+          <form id="reportForm" class="nsw-form card-box">
+            <div class="nsw-form__group">
+              <label class="nsw-form__label" for="reportFacility"
+                >Select Facility</label
+              ><select
+                id="reportFacility"
+                class="nsw-form__input"
+                required
+                aria-describedby="reportFacilityError"
+              >
                 <option value="">Choose a facility...</option>
                 <option value="Bayview Community Hall">
                   Bayview Community Hall
@@ -209,10 +259,22 @@
                 </option>
                 <option value="Civic Pavilion">Civic Pavilion</option>
               </select>
+              <span
+                class="nsw-form__helper nsw-form__helper--error"
+                id="reportFacilityError"
+                role="alert"
+                hidden
+              ></span>
             </div>
-            <div class="field-group">
-              <label for="reportType">Issue Category</label
-              ><select id="reportType" required>
+            <div class="nsw-form__group">
+              <label class="nsw-form__label" for="reportType"
+                >Issue Category</label
+              ><select
+                id="reportType"
+                class="nsw-form__input"
+                required
+                aria-describedby="reportTypeError"
+              >
                 <option value="">Choose a category...</option>
                 <option value="Electrical / Lighting">
                   Electrical / Lighting
@@ -221,23 +283,34 @@
                 <option value="Locks / Access">Locks / Access</option>
                 <option value="Cleaning / Damage">Cleaning / Damage</option>
               </select>
+              <span
+                class="nsw-form__helper nsw-form__helper--error"
+                id="reportTypeError"
+                role="alert"
+                hidden
+              ></span>
             </div>
-            <div class="field-group">
-              <label for="reportDetails">Details</label
+            <div class="nsw-form__group">
+              <label class="nsw-form__label" for="reportDetails">Details</label
               ><textarea
                 id="reportDetails"
+                class="nsw-form__input"
                 placeholder="Describe the issue in detail..."
                 required
                 aria-describedby="reportDetailsError"
               ></textarea
               ><span
-                class="field-error"
+                class="nsw-form__helper nsw-form__helper--error"
                 id="reportDetailsError"
                 role="alert"
+                hidden
               ></span>
             </div>
-            <span class="field-error" id="reportFormError" role="alert"></span>
-            <button type="submit" class="btn-dark" id="reportSubmitButton">
+            <button
+              type="submit"
+              class="nsw-button nsw-button--dark"
+              id="reportSubmitButton"
+            >
               Submit Report
             </button>
           </form>

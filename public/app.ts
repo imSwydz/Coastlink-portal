@@ -1,4 +1,4 @@
-import "./styles.css";
+import "./styles.scss";
 import "../components/toast.css";
 import "../components/tabs.css";
 import "../components/notifications.css";
@@ -20,6 +20,7 @@ let facilities: Facility[] = [];
 let userBookings: Booking[] = [];
 let searchTimer: number | undefined;
 let searchController: AbortController | null = null;
+let searchAttempted = false;
 
 const byId = <T extends HTMLElement>(id: string) =>
   document.getElementById(id) as T;
@@ -71,7 +72,8 @@ function renderResults(list: Facility[]) {
   } else {
     list.forEach((item) => {
       const card = document.createElement("div");
-      card.className = "list-item facility-card";
+      card.className = "nsw-card facility-card";
+      const content = document.createElement("div");
       const details = document.createElement("div");
       const name = document.createElement("strong");
       const summary = document.createElement("div");
@@ -79,14 +81,16 @@ function renderResults(list: Facility[]) {
       name.textContent = item.name;
       summary.className = "item-summary";
       summary.textContent = `${item.suburb} • Capacity: ${item.capacity}`;
-      bookButton.className = "btn-dark";
+      bookButton.className = "nsw-button nsw-button--dark";
       bookButton.type = "button";
       bookButton.textContent = "Book";
       bookButton.addEventListener("click", () =>
         bookFacility(item.name, bookButton),
       );
       details.append(name, summary);
-      card.append(details, bookButton);
+      content.className = "nsw-card__content";
+      content.append(details, bookButton);
+      card.append(content);
       container.appendChild(card);
     });
   }
@@ -199,7 +203,8 @@ function renderBookings() {
   }
   userBookings.forEach((booking) => {
     const card = document.createElement("div");
-    card.className = "list-item facility-card";
+    card.className = "nsw-card facility-card";
+    const content = document.createElement("div");
     const details = document.createElement("div");
     const facility = document.createElement("strong");
     const date = document.createElement("div");
@@ -207,14 +212,16 @@ function renderBookings() {
     facility.textContent = booking.facility;
     date.className = "item-summary";
     date.textContent = `Date: ${booking.date}`;
-    cancelButton.className = "btn-danger";
+    cancelButton.className = "nsw-button nsw-button--danger";
     cancelButton.type = "button";
     cancelButton.textContent = "Cancel";
     cancelButton.addEventListener("click", () =>
       cancelBooking(booking.id, cancelButton),
     );
     details.append(facility, date);
-    card.append(details, cancelButton);
+    content.className = "nsw-card__content";
+    content.append(details, cancelButton);
+    card.append(content);
     container.appendChild(card);
   });
 }
@@ -236,13 +243,16 @@ async function cancelBooking(id: number, button: HTMLButtonElement) {
 }
 
 function setFieldError(id: string, message: string) {
-  byId<HTMLElement>(id).textContent = message;
+  const helper = byId<HTMLElement>(id);
+  helper.hidden = !message;
+  helper.replaceChildren();
+  if (message) helper.textContent = message;
 }
 
 function validateDate() {
   const input = byId<HTMLInputElement>("dateInput");
   const valid = Boolean(input.value);
-  setFieldError("dateError", valid ? "" : "Choose a booking date.");
+  setFieldError("dateError", valid ? "" : "Enter a valid date.");
   input.setAttribute("aria-invalid", String(!valid));
   return valid;
 }
@@ -258,7 +268,11 @@ function validateReportField(
   if (input.id === "reportDetails" && input.value.trim().length < 5)
     message = "Enter at least 5 characters.";
   const errorId =
-    input.id === "reportDetails" ? "reportDetailsError" : "reportFormError";
+    input.id === "reportDetails"
+      ? "reportDetailsError"
+      : input.id === "reportFacility"
+        ? "reportFacilityError"
+        : "reportTypeError";
   setFieldError(errorId, message);
   input.setAttribute("aria-invalid", String(Boolean(message)));
   return !message;
@@ -275,6 +289,7 @@ byId<HTMLSelectElement>("capacitySelect").addEventListener(
 );
 byId<HTMLFormElement>("searchForm").addEventListener("submit", (event) => {
   event.preventDefault();
+  searchAttempted = true;
   startSearch();
 });
 byId<HTMLButtonElement>("showAllBtn").addEventListener("click", () => {
@@ -301,9 +316,8 @@ document
   });
 
 const dateInput = byId<HTMLInputElement>("dateInput");
-dateInput.addEventListener("blur", validateDate);
 dateInput.addEventListener("input", () => {
-  if (dateInput.getAttribute("aria-invalid") === "true") validateDate();
+  if (searchAttempted) validateDate();
 });
 
 document
