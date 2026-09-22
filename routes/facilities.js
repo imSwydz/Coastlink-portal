@@ -11,7 +11,8 @@ function createFacilitiesRouter(getDatabase) {
       const matchesTerm =
         !term ||
         facility.name.toLowerCase().includes(term) ||
-        facility.type.toLowerCase().includes(term);
+        facility.type.toLowerCase().includes(term) ||
+        facility.suburb.toLowerCase().includes(term);
       return (
         matchesTerm &&
         (!suburb || facility.suburb === suburb) &&

@@ -20,13 +20,27 @@ async function request(server, path, options) {
   return { response, body };
 }
 
+async function authenticate(server) {
+  const response = await fetch(`${server.baseUrl}/api/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: "resident@example.com",
+      password: "coastlink-demo",
+    }),
+  });
+  assert.equal(response.status, 200);
+  return response.headers.get("set-cookie");
+}
+
 test("creates and cancels a booking", async (t) => {
   const server = await createTestServer();
   t.after(() => server.server.close());
+  const cookie = await authenticate(server);
 
   const created = await request(server, "/api/bookings", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Cookie: cookie },
     body: JSON.stringify({
       facility: "Bayview Community Hall",
       date: "2026-10-01",
@@ -37,6 +51,7 @@ test("creates and cancels a booking", async (t) => {
 
   const cancelled = await request(server, `/api/bookings/${created.body.id}`, {
     method: "DELETE",
+    headers: { Cookie: cookie },
   });
   assert.equal(cancelled.response.status, 204);
 });
@@ -44,10 +59,11 @@ test("creates and cancels a booking", async (t) => {
 test("rejects invalid booking dates and unknown facilities", async (t) => {
   const server = await createTestServer();
   t.after(() => server.server.close());
+  const cookie = await authenticate(server);
 
   const invalidDate = await request(server, "/api/bookings", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Cookie: cookie },
     body: JSON.stringify({
       facility: "Bayview Community Hall",
       date: "tomorrow",
@@ -57,7 +73,7 @@ test("rejects invalid booking dates and unknown facilities", async (t) => {
 
   const unknownFacility = await request(server, "/api/bookings", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Cookie: cookie },
     body: JSON.stringify({
       facility: "<img src=x onerror=confirm(1)>",
       date: "2026-10-01",
@@ -66,13 +82,35 @@ test("rejects invalid booking dates and unknown facilities", async (t) => {
   assert.equal(unknownFacility.response.status, 400);
 });
 
+test("searches facilities by suburb and minimum capacity", async (t) => {
+  const server = await createTestServer();
+  t.after(() => server.server.close());
+  const cookie = await authenticate(server);
+
+  const suburbResults = await request(server, "/api/facilities?q=Bayview");
+  assert.equal(suburbResults.response.status, 200);
+  assert.ok(suburbResults.body.length >= 3);
+  assert.ok(
+    suburbResults.body.every((facility) => facility.suburb === "Bayview"),
+  );
+
+  const capacityResults = await request(
+    server,
+    "/api/facilities?minCapacity=100",
+  );
+  assert.equal(capacityResults.response.status, 200);
+  assert.ok(capacityResults.body.length >= 2);
+  assert.ok(capacityResults.body.every((facility) => facility.capacity >= 100));
+});
+
 test("submits a report and rejects unsupported categories", async (t) => {
   const server = await createTestServer();
   t.after(() => server.server.close());
+  const cookie = await authenticate(server);
 
   const report = await request(server, "/api/reports", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Cookie: cookie },
     body: JSON.stringify({
       facility: "Civic Pavilion",
       category: "Electrical / Lighting",
@@ -84,7 +122,7 @@ test("submits a report and rejects unsupported categories", async (t) => {
 
   const invalidReport = await request(server, "/api/reports", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Cookie: cookie },
     body: JSON.stringify({
       facility: "Civic Pavilion",
       category: "Unsupported category",
@@ -92,4 +130,12 @@ test("submits a report and rejects unsupported categories", async (t) => {
     }),
   });
   assert.equal(invalidReport.response.status, 400);
+});
+
+test("requires authentication for bookings", async (t) => {
+  const server = await createTestServer();
+  t.after(() => server.server.close());
+
+  const response = await request(server, "/api/bookings");
+  assert.equal(response.response.status, 401);
 });

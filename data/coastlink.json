@@ -27,6 +27,48 @@
       "type": "Hall",
       "suburb": "North Beach",
       "capacity": 150
+    },
+    {
+      "id": 5,
+      "name": "Harbourview Meeting Room",
+      "type": "Room",
+      "suburb": "Bayview",
+      "capacity": 12
+    },
+    {
+      "id": 6,
+      "name": "Seabreeze Sports Hall",
+      "type": "Hall",
+      "suburb": "South Point",
+      "capacity": 120
+    },
+    {
+      "id": 7,
+      "name": "North Beach Picnic Shelter",
+      "type": "Shelter",
+      "suburb": "North Beach",
+      "capacity": 30
+    },
+    {
+      "id": 8,
+      "name": "Bayview Outdoor Court",
+      "type": "Court",
+      "suburb": "Bayview",
+      "capacity": 30
+    },
+    {
+      "id": 9,
+      "name": "South Point Community Room",
+      "type": "Room",
+      "suburb": "South Point",
+      "capacity": 40
+    },
+    {
+      "id": 10,
+      "name": "Coastal Arts Studio",
+      "type": "Studio",
+      "suburb": "North Beach",
+      "capacity": 25
     }
   ],
   "bookings": [

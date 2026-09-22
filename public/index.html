@@ -25,6 +25,46 @@
         </div>
         <div class="header-actions">
           <span class="api-status" id="apiStatus">Checking service...</span>
+          <div class="auth-area">
+            <button class="auth-button" id="authButton" type="button">
+              Sign in
+            </button>
+            <div class="auth-panel" id="authPanel" hidden>
+              <form id="loginForm">
+                <h2 class="auth-heading">Sign in</h2>
+                <label class="nsw-form__label" for="loginEmail">Email</label>
+                <input
+                  id="loginEmail"
+                  type="email"
+                  autocomplete="email"
+                  required
+                  value="resident@example.com"
+                />
+                <label class="nsw-form__label" for="loginPassword"
+                  >Password</label
+                >
+                <input
+                  id="loginPassword"
+                  type="password"
+                  autocomplete="current-password"
+                  required
+                  value="coastlink-demo"
+                />
+                <p class="auth-error" id="loginError" role="alert" hidden></p>
+                <button class="nsw-button nsw-button--dark" type="submit">
+                  Sign in
+                </button>
+              </form>
+              <button
+                class="auth-logout"
+                id="logoutButton"
+                type="button"
+                hidden
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
           <div class="notification-area">
             <button
               class="notification-button"

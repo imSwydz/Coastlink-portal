@@ -4,6 +4,7 @@ const { loadDatabase, saveDatabase } = require("./db");
 const createFacilitiesRouter = require("./routes/facilities");
 const { createBookingsRouter } = require("./routes/bookings");
 const { createReportsRouter } = require("./routes/reports");
+const { createAuthRouter, requireAuth } = require("./auth");
 
 function createApp(options = {}) {
   const app = express();
@@ -20,6 +21,7 @@ function createApp(options = {}) {
   });
   app.use(express.json());
   app.use(express.static(path.join(__dirname, "dist")));
+  app.use("/api/auth", createAuthRouter());
 
   app.get("/api/health", (req, res) => {
     res.json({
@@ -29,8 +31,16 @@ function createApp(options = {}) {
     });
   });
   app.use("/api/facilities", createFacilitiesRouter(getDatabase));
-  app.use("/api/bookings", createBookingsRouter(getDatabase, persist));
-  app.use("/api/reports", createReportsRouter(getDatabase, persist));
+  app.use(
+    "/api/bookings",
+    requireAuth,
+    createBookingsRouter(getDatabase, persist),
+  );
+  app.use(
+    "/api/reports",
+    requireAuth,
+    createReportsRouter(getDatabase, persist),
+  );
   return app;
 }
 
