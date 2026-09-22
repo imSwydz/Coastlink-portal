@@ -4,14 +4,7 @@ export function setupTabs(onTabChange: (tabId: string) => void) {
     document.querySelectorAll<HTMLElement>(".tab-content"),
   );
 
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      const tabId = tab.dataset.tab;
-      if (tabId) onTabChange(tabId);
-    });
-  });
-
-  return (tabId: string) => {
+  const activate = (tabId: string) => {
     const panel = document.getElementById(tabId);
     if (!panel) return;
 
@@ -27,5 +20,15 @@ export function setupTabs(onTabChange: (tabId: string) => void) {
 
     panel.hidden = false;
     panel.classList.add("active", "tab-enter");
+    onTabChange(tabId);
   };
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const tabId = tab.dataset.tab;
+      if (tabId) activate(tabId);
+    });
+  });
+
+  return activate;
 }
