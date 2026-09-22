@@ -19,32 +19,61 @@
         </div>
         <div class="header-actions">
           <span class="api-status" id="apiStatus">Checking service...</span>
+          <div class="notification-area">
+            <button
+              class="notification-button"
+              id="notificationButton"
+              type="button"
+              aria-label="Notifications"
+              aria-expanded="false"
+              aria-controls="notificationDropdown"
+            >
+              &#128276;<span
+                id="notificationBadge"
+                class="notification-badge"
+                hidden
+                >0</span
+              >
+            </button>
+            <div id="notificationDropdown" class="notification-dropdown" hidden>
+              <h2 class="notification-heading">Notifications</h2>
+              <div id="notificationList"></div>
+            </div>
+          </div>
         </div>
       </header>
 
-      <nav>
+      <nav role="tablist" aria-label="Portal sections">
         <a
           class="nav-tab active"
+          role="tab"
+          aria-selected="true"
+          tabindex="0"
           data-tab="tab-book"
-          data-url="coastlink.nsw.gov.au/facilities"
           >Book a facility</a
         >
         <a
           class="nav-tab"
+          role="tab"
+          aria-selected="false"
+          tabindex="0"
           data-tab="tab-bookings"
-          data-url="coastlink.nsw.gov.au/my-bookings"
           >My bookings</a
         >
         <a
           class="nav-tab"
+          role="tab"
+          aria-selected="false"
+          tabindex="0"
           data-tab="tab-report"
-          data-url="coastlink.nsw.gov.au/report"
           >Report a problem</a
         >
         <a
           class="nav-tab"
+          role="tab"
+          aria-selected="false"
+          tabindex="0"
           data-tab="tab-help"
-          data-url="coastlink.nsw.gov.au/help"
           >Help</a
         >
       </nav>
@@ -55,7 +84,6 @@
           <p class="subtitle">
             Halls, meeting rooms, sports courts and community equipment.
           </p>
-
           <form id="searchForm" class="card-box">
             <div class="field-group">
               <label for="searchInput">What do you need?</label>
@@ -65,7 +93,6 @@
                 placeholder="Search halls, rooms, courts..."
               />
             </div>
-
             <div class="input-row">
               <div class="field-group">
                 <label for="suburbSelect">Suburb</label>
@@ -78,7 +105,13 @@
               </div>
               <div class="field-group">
                 <label for="dateInput">Date</label>
-                <input type="date" id="dateInput" required />
+                <input
+                  type="date"
+                  id="dateInput"
+                  required
+                  aria-describedby="dateError"
+                />
+                <span class="field-error" id="dateError" role="alert"></span>
               </div>
               <div class="field-group">
                 <label for="capacitySelect">Number of people</label>
@@ -90,66 +123,72 @@
                 </select>
               </div>
             </div>
-
             <div class="button-row">
-              <button type="submit" class="btn-dark">Search facilities</button>
+              <button type="submit" class="btn-dark" id="searchButton">
+                Search facilities
+              </button>
               <button type="button" class="btn-light" id="showAllBtn">
                 Show all facilities
               </button>
             </div>
           </form>
-
-          <div id="resultsSection" style="display: none; margin-bottom: 2rem">
+          <div id="resultsSection" hidden>
             <div class="tasks-heading">Search Results</div>
+            <p id="resultsCount" class="results-count" aria-live="polite"></p>
+            <div
+              id="resultsLoading"
+              class="results-loading"
+              hidden
+              aria-live="polite"
+            >
+              Loading facilities...
+            </div>
             <div id="resultsContainer"></div>
           </div>
-
           <div class="tasks-heading">Or start from a common task</div>
           <div class="tasks-grid">
-            <div class="task-card" onclick="quickFilter('Hall')">
+            <button class="task-card" type="button" data-quick-filter="Hall">
               <h3>Book a community hall</h3>
               <p>For meetings, parties and classes.</p>
-            </div>
-            <div
+            </button>
+            <button
               class="task-card"
-              onclick="switchTab('tab-report', 'coastlink.nsw.gov.au/report')"
+              type="button"
+              data-switch-tab="tab-report"
             >
               <h3>Report a problem</h3>
               <p>Broken lights, taps, doors or equipment.</p>
-            </div>
-            <div
+            </button>
+            <button
               class="task-card"
-              onclick="
-                switchTab('tab-bookings', 'coastlink.nsw.gov.au/my-bookings')
-              "
+              type="button"
+              data-switch-tab="tab-bookings"
             >
               <h3>Check a booking</h3>
               <p>View, change or cancel what you booked.</p>
-            </div>
+            </button>
           </div>
-
           <div class="alert-box">
-            <strong>Temporary closures this week</strong>
-            Bayview Community Hall is closed Mon 8 – Wed 10 Sept for floor
-            repairs.
+            <strong>Temporary closures this week</strong> Bayview Community Hall
+            is closed Mon 8 – Wed 10 Sept for floor repairs.
           </div>
         </section>
 
-        <section id="tab-bookings" class="tab-content">
+        <section id="tab-bookings" class="tab-content" hidden>
           <h2 class="page-title">My Bookings</h2>
           <p class="subtitle">Review and manage your current reservations.</p>
           <div id="bookingsList"></div>
         </section>
 
-        <section id="tab-report" class="tab-content">
+        <section id="tab-report" class="tab-content" hidden>
           <h2 class="page-title">Report a Problem</h2>
           <p class="subtitle">
             Notify the council of broken lights, equipment, or facility issues.
           </p>
           <form id="reportForm" class="card-box">
             <div class="field-group">
-              <label for="reportFacility">Select Facility</label>
-              <select id="reportFacility" required>
+              <label for="reportFacility">Select Facility</label
+              ><select id="reportFacility" required>
                 <option value="">Choose a facility...</option>
                 <option value="Bayview Community Hall">
                   Bayview Community Hall
@@ -164,8 +203,9 @@
               </select>
             </div>
             <div class="field-group">
-              <label for="reportType">Issue Category</label>
-              <select id="reportType" required>
+              <label for="reportType">Issue Category</label
+              ><select id="reportType" required>
+                <option value="">Choose a category...</option>
                 <option value="Electrical / Lighting">
                   Electrical / Lighting
                 </option>
@@ -175,23 +215,32 @@
               </select>
             </div>
             <div class="field-group">
-              <label for="reportDetails">Details</label>
-              <textarea
+              <label for="reportDetails">Details</label
+              ><textarea
                 id="reportDetails"
                 placeholder="Describe the issue in detail..."
                 required
-              ></textarea>
+                aria-describedby="reportDetailsError"
+              ></textarea
+              ><span
+                class="field-error"
+                id="reportDetailsError"
+                role="alert"
+              ></span>
             </div>
-            <button type="submit" class="btn-dark">Submit Report</button>
+            <span class="field-error" id="reportFormError" role="alert"></span>
+            <button type="submit" class="btn-dark" id="reportSubmitButton">
+              Submit Report
+            </button>
           </form>
         </section>
 
-        <section id="tab-help" class="tab-content">
+        <section id="tab-help" class="tab-content" hidden>
           <h2 class="page-title">Frequently Asked Questions</h2>
           <p class="subtitle">
             Find answers to common questions about using Council spaces.
           </p>
-          <div class="faq-item" onclick="toggleFaq(this)">
+          <button class="faq-item" type="button">
             <div class="faq-question">
               &#9656; How far in advance can I make a reservation?
             </div>
@@ -199,8 +248,8 @@
               Bookings open up to 6 months in advance. Minimum booking notice is
               48 business hours.
             </div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
+          </button>
+          <button class="faq-item" type="button">
             <div class="faq-question">
               &#9656; Do I need insurance to book a venue?
             </div>
@@ -208,8 +257,8 @@
               Commercial users and public events require Public Liability
               Insurance (minimum $20M). Private events usually do not.
             </div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
+          </button>
+          <button class="faq-item" type="button">
             <div class="faq-question">
               &#9656; What is the cancellation policy?
             </div>
@@ -217,7 +266,7 @@
               Full refunds are provided for cancellations made at least 7 days
               prior to the booking date.
             </div>
-          </div>
+          </button>
         </section>
       </main>
 
@@ -228,7 +277,12 @@
         >
       </footer>
     </div>
-
+    <div
+      id="toastContainer"
+      class="toast-container"
+      role="status"
+      aria-live="polite"
+    ></div>
     <script type="module" src="/app.ts"></script>
   </body>
 </html>

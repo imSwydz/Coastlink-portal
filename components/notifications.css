@@ -1,0 +1,10 @@
+.notification-area { position: relative; }
+.notification-button { position: relative; border: 0; background: transparent; color: var(--color-navy); font-size: 1.35rem; cursor: pointer; }
+.notification-button:hover { color: var(--color-teal); }
+.notification-badge { position: absolute; top: -0.35rem; right: -0.4rem; min-width: 1rem; padding: 0.1rem 0.25rem; border-radius: 999px; background: #dc2626; color: #fff; font-size: 0.65rem; line-height: 1; }
+.notification-dropdown { position: absolute; right: 0; top: calc(100% + 0.75rem); z-index: 5; width: 18rem; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; background: #fff; box-shadow: 0 8px 24px rgb(15 23 42 / 16%); }
+.notification-dropdown[hidden] { display: none; }
+.notification-heading { margin: 0 0 0.5rem; color: var(--color-navy); font-size: 0.9rem; }
+.notification-item { padding: 0.65rem; border-bottom: 1px solid #e2e8f0; font-size: 0.85rem; }
+.notification-item.read { color: #64748b; }
+.notification-empty { margin: 0; color: #64748b; font-size: 0.85rem; }

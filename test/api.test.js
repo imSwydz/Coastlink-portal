@@ -59,7 +59,7 @@ test("rejects invalid booking dates and unknown facilities", async (t) => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      facility: "<img src=x onerror=alert(1)>",
+      facility: "<img src=x onerror=confirm(1)>",
       date: "2026-10-01",
     }),
   });

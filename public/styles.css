@@ -15,6 +15,18 @@
     -apple-system,
     sans-serif;
 }
+button,
+[role="tab"] {
+  font: inherit;
+}
+button:focus-visible,
+[role="tab"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--color-teal-bright);
+  outline-offset: 2px;
+}
 body {
   margin: 0;
   padding: 2rem 1rem;
@@ -32,7 +44,7 @@ body {
 
 /* Header */
 header {
-  background: var(--color-navy);
+  background: #fff;
   padding: 1.5rem;
   display: flex;
   justify-content: space-between;
@@ -58,12 +70,12 @@ header {
 .brand-text h1 {
   margin: 0;
   font-size: 1.25rem;
-  color: #fff;
+  color: var(--color-navy);
 }
 .brand-text p {
   margin: 2px 0 0;
   font-size: 0.875rem;
-  color: #c7d8eb;
+  color: #475569;
 }
 .header-actions {
   display: flex;
@@ -121,6 +133,9 @@ main {
 }
 .tab-content.active {
   display: block;
+}
+.tab-content[hidden] {
+  display: none;
 }
 
 .page-title {
@@ -217,6 +232,12 @@ textarea {
   border-radius: 4px;
   cursor: pointer;
 }
+.btn-dark:disabled,
+.btn-light:disabled,
+.btn-danger:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
 
 /* Results / List Items */
 .list-item {
@@ -228,6 +249,32 @@ textarea {
   border-radius: 6px;
   margin-top: 0.75rem;
   background: #fff;
+}
+.facility-card {
+  transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+.facility-card:hover,
+.facility-card:focus-within {
+  border-color: var(--color-teal);
+  box-shadow: 0 4px 12px rgb(8 123 152 / 15%);
+}
+.item-summary,
+.empty-message,
+.results-count {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+.results-loading {
+  color: var(--color-teal-hover);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.field-error {
+  display: block;
+  min-height: 1.1rem;
+  margin-top: 0.25rem;
+  color: #b91c1c;
+  font-size: 0.8rem;
 }
 .tasks-heading {
   font-weight: bold;
@@ -245,9 +292,14 @@ textarea {
   border-radius: 6px;
   padding: 1.25rem;
   cursor: pointer;
+  text-align: left;
+  font: inherit;
+  background: #fff;
+  transition: background 150ms ease-out, box-shadow 150ms ease-out;
 }
 .task-card:hover {
   background: #f8fafc;
+  box-shadow: 0 4px 12px rgb(15 23 42 / 10%);
 }
 .task-card h3 {
   margin: 0 0 0.5rem;
@@ -273,6 +325,22 @@ textarea {
   border-bottom: 1px solid #e2e8f0;
   padding: 1rem 0;
   cursor: pointer;
+  width: 100%;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+}
+.faq-item:hover {
+  background: #f8fafc;
+}
+.faq-item .faq-answer {
+  display: none;
+}
+.faq-item.open .faq-answer {
+  display: block;
 }
 .faq-question {
   font-weight: bold;

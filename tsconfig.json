@@ -13,5 +13,5 @@
     "moduleResolution": "Bundler",
     "noEmit": true
   },
-  "include": ["public/app.ts", "public/**/*.d.ts"]
+  "include": ["public/app.ts", "public/**/*.d.ts", "components/**/*.ts"]
 }
