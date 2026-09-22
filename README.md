@@ -1,8 +1,7 @@
 # CoastLink Council — Facility Portal
 
-Front-end prototype for the Booking System Component of the CoastLink Council facility
-management project (Team LFL). Built as a single-page HTML/CSS/JS app — no build step or
-dependencies required.
+CoastLink Council facility booking and maintenance portal (Team LFL). The app includes a
+single-page HTML/CSS/JS interface, an Express backend, and a persistent local JSON database.
 
 ## Features
 
@@ -13,11 +12,12 @@ dependencies required.
 - **Report a Problem** — maintenance request form (facility, issue category, details) that
   returns a generated ticket ID
 - **Help / FAQ** — collapsible frequently-asked-questions section
-- **Accessibility** — adjustable text size control
+- **Accessibility** — semantic labels, keyboard-friendly controls, and readable contrast
 
 ## Running it
 
-This now has a small Node/Express backend serving the front-end and a REST API.
+This has a Node/Express backend serving the front-end and a REST API. The backend creates
+`data/coastlink.json` automatically and saves bookings and maintenance reports there.
 
 ```bash
 npm install
@@ -26,23 +26,25 @@ npm start
 
 Then visit `http://localhost:3000`.
 
+The app has one HTML entrypoint: `public/index.html`, served by the Express backend.
+
 ### API
 
-| Method | Endpoint             | Description                          |
-|--------|-----------------------|---------------------------------------|
-| GET    | `/api/facilities`     | List facilities (filter by `q`, `suburb`, `minCapacity`) |
-| GET    | `/api/bookings`       | List current bookings                 |
-| POST   | `/api/bookings`       | Create a booking (`facility`, `date`) |
-| DELETE | `/api/bookings/:id`   | Cancel a booking                      |
-| POST   | `/api/reports`        | Submit a maintenance report (`facility`, `category`, `details`), returns a `ticketId` |
-| GET    | `/api/reports`        | List submitted reports                |
+| Method | Endpoint            | Description                                                                           |
+| ------ | ------------------- | ------------------------------------------------------------------------------------- |
+| GET    | `/api/facilities`   | List facilities (filter by `q`, `suburb`, `minCapacity`)                              |
+| GET    | `/api/bookings`     | List current bookings                                                                 |
+| POST   | `/api/bookings`     | Create a booking (`facility`, `date`)                                                 |
+| DELETE | `/api/bookings/:id` | Cancel a booking                                                                      |
+| POST   | `/api/reports`      | Submit a maintenance report (`facility`, `category`, `details`), returns a `ticketId` |
+| GET    | `/api/reports`      | List submitted reports                                                                |
+| GET    | `/api/health`       | Check API and database status                                                         |
 
 ## Status
 
-Data is currently held in-memory on the server (facilities, bookings, and reports reset on
-restart). The front-end (`public/index.html`) still uses its own local sample data rather than
-calling these endpoints — wiring it up to the API is the next step, followed by connecting the
-API to the real database schema from the Database Design task.
+The front-end calls the Express API for facility search, bookings, cancellations, and maintenance
+reports. Data is stored in `data/coastlink.json`, so bookings and reports persist when the server
+restarts. The file is created with the initial facility data on first launch.
 
 ## Team LFL
 
