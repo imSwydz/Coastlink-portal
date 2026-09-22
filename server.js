@@ -20,6 +20,7 @@ function createApp(options = {}) {
     next();
   });
   app.use(express.json());
+  app.get("/", (req, res) => res.redirect("/home.html"));
   app.use(express.static(path.join(__dirname, "dist")));
   app.use("/api/auth", createAuthRouter());
 

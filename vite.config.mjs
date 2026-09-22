@@ -5,5 +5,11 @@ export default defineConfig({
   build: {
     outDir: "../dist",
     emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        portal: "public/index.html",
+        home: "public/home.html",
+      },
+    },
   },
 });

@@ -21,7 +21,6 @@ let userBookings: Booking[] = [];
 let searchTimer: number | undefined;
 let searchController: AbortController | null = null;
 let searchAttempted = false;
-let authenticated = false;
 
 const byId = <T extends HTMLElement>(id: string) =>
   document.getElementById(id) as T;
@@ -41,23 +40,10 @@ async function apiRequest<T>(
   });
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    if (response.status === 401) {
-      setAuthState(false);
-      throw new Error("Please sign in to continue.");
-    }
+    if (response.status === 401) window.location.href = "/home.html#sign-in";
     throw new Error(error.error || `Request failed (${response.status})`);
   }
   return response.status === 204 ? null : ((await response.json()) as T);
-}
-
-function setAuthState(isAuthenticated: boolean, email = "") {
-  authenticated = isAuthenticated;
-  const button = byId<HTMLButtonElement>("authButton");
-  const form = byId<HTMLFormElement>("loginForm");
-  const logout = byId<HTMLButtonElement>("logoutButton");
-  button.textContent = isAuthenticated ? email || "Account" : "Sign in";
-  form.hidden = isAuthenticated;
-  logout.hidden = !isAuthenticated;
 }
 
 async function loadAuthState() {
@@ -69,7 +55,15 @@ async function loadAuthState() {
     const bookings = await apiRequest<Booking[]>("/api/bookings");
     userBookings = bookings || [];
   }
-  setAuthState(Boolean(result?.authenticated), result?.user?.email);
+  if (!result?.authenticated || !result.user) {
+    window.location.href = "/home.html#sign-in";
+    return;
+  }
+  const user = byId<HTMLElement>("portalUser");
+  user.textContent = result.user.email;
+  byId<HTMLElement>("portalAvatar").textContent = result.user.email
+    .charAt(0)
+    .toUpperCase();
 }
 
 function setLoading(
@@ -168,18 +162,10 @@ function scheduleSearch() {
 }
 
 async function loadInitialData() {
-  const status = byId<HTMLSpanElement>("apiStatus");
   try {
-    const [health, loadedFacilities] = await Promise.all([
-      apiRequest<{ status: string }>("/api/health"),
-      apiRequest<Facility[]>("/api/facilities"),
-    ]);
+    const loadedFacilities = await apiRequest<Facility[]>("/api/facilities");
     facilities = loadedFacilities || [];
-    status.textContent =
-      health?.status === "ok" ? "Backend connected" : "Service issue";
   } catch (error) {
-    status.textContent = "Backend offline";
-    status.classList.add("offline");
     showToast({
       message: error instanceof Error ? error.message : "Backend offline",
       type: "error",
@@ -317,42 +303,10 @@ byId<HTMLFormElement>("searchForm").addEventListener("submit", (event) => {
   searchAttempted = true;
   startSearch();
 });
-byId<HTMLButtonElement>("authButton").addEventListener("click", () => {
-  const panel = byId<HTMLElement>("authPanel");
-  panel.hidden = !panel.hidden;
-});
-byId<HTMLFormElement>("loginForm").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const error = byId<HTMLElement>("loginError");
-  error.hidden = true;
-  try {
-    const result = await apiRequest<{ user: { email: string } }>(
-      "/api/auth/login",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          email: byId<HTMLInputElement>("loginEmail").value,
-          password: byId<HTMLInputElement>("loginPassword").value,
-        }),
-      },
-    );
-    setAuthState(true, result?.user.email);
-    byId<HTMLElement>("authPanel").hidden = true;
-    showToast({ message: "Signed in successfully.", type: "success" });
-    const bookings = await apiRequest<Booking[]>("/api/bookings");
-    userBookings = bookings || [];
-  } catch (loginError) {
-    error.textContent =
-      loginError instanceof Error ? loginError.message : "Sign in failed";
-    error.hidden = false;
-  }
-});
 byId<HTMLButtonElement>("logoutButton").addEventListener("click", async () => {
   await apiRequest<void>("/api/auth/logout", { method: "POST" });
   userBookings = [];
-  setAuthState(false);
-  byId<HTMLElement>("authPanel").hidden = true;
-  showToast({ message: "You have been signed out.", type: "info" });
+  window.location.href = "/home.html";
 });
 byId<HTMLButtonElement>("showAllBtn").addEventListener("click", () => {
   byId<HTMLInputElement>("searchInput").value = "";
@@ -442,5 +396,5 @@ document.querySelectorAll<HTMLButtonElement>(".faq-item").forEach((item) => {
 });
 
 loadInitialData();
-loadAuthState().catch(() => setAuthState(false));
+loadAuthState().catch(() => (window.location.href = "/home.html#sign-in"));
 startSearch();

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CoastLink Council - Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Icons&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="home-page">
+    <div class="home-shell">
+      <header class="home-header">
+        <a
+          class="home-brand"
+          href="/home.html"
+          aria-label="CoastLink Council home"
+        >
+          <span class="home-logo"
+            ><img src="/coastlink-logo.svg" alt="CoastLink logo"
+          /></span>
+          <span
+            ><strong>CoastLink Council</strong
+            ><small>Community spaces, made simple</small></span
+          >
+        </a>
+        <div class="home-actions">
+          <span class="home-identity" id="homeIdentity" hidden>
+            <span class="user-avatar" id="homeAvatar" aria-hidden="true"
+              >R</span
+            >
+            <span class="home-user" id="homeUser"></span>
+          </span>
+          <button
+            class="notification-button"
+            type="button"
+            aria-label="Notifications"
+          >
+            &#128276;
+          </button>
+          <a class="home-signin-link" href="#sign-in">Sign in</a>
+        </div>
+      </header>
+
+      <main class="home-main">
+        <section class="home-intro" aria-labelledby="homeTitle">
+          <p class="home-eyebrow">COASTLINK COMMUNITY PORTAL</p>
+          <h1 id="homeTitle">Find a place for what matters.</h1>
+          <p>
+            Book local halls, rooms and courts, or let Council know when a
+            facility needs attention.
+          </p>
+          <div class="home-links">
+            <a class="nsw-button nsw-button--dark" href="#sign-in"
+              >Open the portal</a
+            >
+            <a class="home-text-link" href="#how-it-works"
+              >How it works <span aria-hidden="true">&rarr;</span></a
+            >
+          </div>
+        </section>
+
+        <section
+          class="home-workflow"
+          id="how-it-works"
+          aria-label="Portal actions"
+        >
+          <article>
+            <span class="home-step">01</span>
+            <h2>Choose a space</h2>
+            <p>Search community facilities by suburb, type and capacity.</p>
+          </article>
+          <article>
+            <span class="home-step">02</span>
+            <h2>Make a booking</h2>
+            <p>Pick a date and keep your reservations together.</p>
+          </article>
+          <article>
+            <span class="home-step">03</span>
+            <h2>Stay in the loop</h2>
+            <p>Report issues and receive updates from your portal.</p>
+          </article>
+        </section>
+
+        <section class="home-login" id="sign-in" aria-labelledby="signInTitle">
+          <div>
+            <p class="home-eyebrow">YOUR COASTLINK ACCOUNT</p>
+            <h2 id="signInTitle">Sign in to continue</h2>
+            <p>
+              Use your account to book a facility, manage reservations and
+              report a problem.
+            </p>
+          </div>
+          <form id="homeLoginForm">
+            <label class="nsw-form__label" for="homeEmail">Email</label>
+            <input
+              id="homeEmail"
+              type="email"
+              autocomplete="email"
+              value="resident@example.com"
+              required
+            />
+            <label class="nsw-form__label" for="homePassword">Password</label>
+            <input
+              id="homePassword"
+              type="password"
+              autocomplete="current-password"
+              value="coastlink-demo"
+              required
+            />
+            <p class="auth-error" id="homeLoginError" role="alert" hidden></p>
+            <button class="nsw-button nsw-button--dark" type="submit">
+              Sign in to CoastLink
+            </button>
+          </form>
+        </section>
+      </main>
+      <footer>
+        <span
+          ><strong>Need help?</strong> Phone (02) 4200 0000, Monday to Friday
+          8:30am-4:30pm</span
+        >
+      </footer>
+    </div>
+    <div
+      id="toastContainer"
+      class="toast-container"
+      role="status"
+      aria-live="polite"
+    ></div>
+    <script type="module" src="/home.ts"></script>
+  </body>
+</html>
