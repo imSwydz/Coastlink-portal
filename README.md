@@ -35,7 +35,7 @@ call required.
 
 ## Tech stack
 
-- **Frontend:** built and designed in [Lovable](https://lovable.dev), TypeScript
+- **Frontend:** inspired from nsw design system,  TypeScript
 - **Backend:** Node.js, Express
 - **Storage:** local JSON file (`data/coastlink.json`), with a swap to SQLite planned if concurrent usage requires it
 
