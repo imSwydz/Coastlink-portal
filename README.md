@@ -28,6 +28,24 @@ Then visit `http://localhost:3000`.
 
 The app has one HTML entrypoint: `public/index.html`, served by the Express backend.
 
+### Project structure
+
+- `server.js` — starts Express and mounts the API routes
+- `db.js` — loads and saves the demo JSON database
+- `routes/` — facility, booking, and maintenance report endpoints
+- `public/` — markup, styles, and browser behavior in separate files
+- `test/` — API regression tests using an in-memory database
+
+The JSON file is appropriate for this demonstration because it keeps setup simple
+and makes the persisted sample data easy to inspect. If this becomes a multi-user
+service, migrate the same route contract to SQLite first for transactions and
+concurrent access, then to a managed relational database if it needs to scale
+beyond one application process.
+
+Bookings require an existing facility and a `YYYY-MM-DD` date. Maintenance reports
+accept only the issue categories shown in the form and require a description of at
+least five characters.
+
 ### API
 
 | Method | Endpoint            | Description                                                                           |

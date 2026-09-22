@@ -63,19 +63,27 @@ function renderResults(list) {
   container.innerHTML = "";
 
   if (list.length === 0) {
-    container.innerHTML =
-      '<p style="color: #64748b;">No matching facilities found.</p>';
+    const emptyMessage = document.createElement("p");
+    emptyMessage.style.color = "#64748b";
+    emptyMessage.textContent = "No matching facilities found.";
+    container.appendChild(emptyMessage);
   } else {
     list.forEach((item) => {
       const div = document.createElement("div");
       div.className = "list-item";
-      div.innerHTML = `
-      <div>
-        <strong>${item.name}</strong>
-        <div style="font-size: 0.85rem; color: #64748b;">${item.suburb} &bull; Capacity: ${item.capacity}</div>
-      </div>
-      <button class="btn-dark" onclick="bookFacility('${item.name}')">Book</button>
-    `;
+      const details = document.createElement("div");
+      const name = document.createElement("strong");
+      const summary = document.createElement("div");
+      const bookButton = document.createElement("button");
+
+      name.textContent = item.name;
+      summary.style.cssText = "font-size: 0.85rem; color: #64748b;";
+      summary.textContent = `${item.suburb} • Capacity: ${item.capacity}`;
+      bookButton.className = "btn-dark";
+      bookButton.textContent = "Book";
+      bookButton.addEventListener("click", () => bookFacility(item.name));
+      details.append(name, summary);
+      div.append(details, bookButton);
       container.appendChild(div);
     });
   }
@@ -83,7 +91,11 @@ function renderResults(list) {
 }
 
 async function bookFacility(name) {
-  const date = document.getElementById("dateInput").value || "Upcoming";
+  const date = document.getElementById("dateInput").value;
+  if (!date) {
+    alert("Please choose a booking date.");
+    return;
+  }
   try {
     const booking = await apiRequest("/api/bookings", {
       method: "POST",
@@ -129,21 +141,29 @@ function renderBookings() {
   container.innerHTML = "";
 
   if (userBookings.length === 0) {
-    container.innerHTML =
-      '<p style="color: #64748b;">No active bookings found.</p>';
+    const emptyMessage = document.createElement("p");
+    emptyMessage.style.color = "#64748b";
+    emptyMessage.textContent = "No active bookings found.";
+    container.appendChild(emptyMessage);
     return;
   }
 
   userBookings.forEach((b) => {
     const div = document.createElement("div");
     div.className = "list-item";
-    div.innerHTML = `
-    <div>
-      <strong>${b.facility}</strong>
-      <div style="font-size: 0.85rem; color: #64748b;">Date: ${b.date}</div>
-    </div>
-    <button class="btn-danger" onclick="cancelBooking(${b.id})">Cancel</button>
-  `;
+    const details = document.createElement("div");
+    const facility = document.createElement("strong");
+    const date = document.createElement("div");
+    const cancelButton = document.createElement("button");
+
+    facility.textContent = b.facility;
+    date.style.cssText = "font-size: 0.85rem; color: #64748b;";
+    date.textContent = `Date: ${b.date}`;
+    cancelButton.className = "btn-danger";
+    cancelButton.textContent = "Cancel";
+    cancelButton.addEventListener("click", () => cancelBooking(b.id));
+    details.append(facility, date);
+    div.append(details, cancelButton);
     container.appendChild(div);
   });
 }
