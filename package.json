@@ -4,10 +4,15 @@
   "description": "Prototype backend for CoastLink Council's facility booking and maintenance system",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "build": "tsc --noEmit && vite build",
+    "start": "npm run build && node server.js",
     "test": "node --test"
   },
   "dependencies": {
     "express": "^4.22.2"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
   }
 }
