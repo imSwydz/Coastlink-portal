@@ -1,0 +1,259 @@
+* {
+  box-sizing: border-box;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+body {
+  margin: 0;
+  padding: 2rem 1rem;
+  background: #eaedf0;
+  color: #1e293b;
+}
+.window {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Header */
+header {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.logo-box {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 72px;
+}
+.logo-box img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.brand-text h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.brand-text p {
+  margin: 2px 0 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+.header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.api-status {
+  font-size: 12px;
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  padding: 5px 9px;
+  border-radius: 999px;
+}
+.api-status.offline {
+  color: #991b1b;
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+/* Nav */
+nav {
+  display: flex;
+  border-bottom: 2px solid #cbd5e1;
+  padding: 0 1.5rem;
+}
+.nav-tab {
+  padding: 10px 16px;
+  text-decoration: none;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.nav-tab.active {
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  border-bottom-color: #e2e8f0;
+  font-weight: bold;
+}
+
+/* Main Container & Sections */
+main {
+  padding: 2rem 1.5rem;
+}
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
+
+.page-title {
+  font-family: Georgia, serif;
+  font-size: 1.8rem;
+  margin: 0 0 0.5rem;
+}
+.subtitle {
+  margin: 0 0 1.5rem;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+/* Search & Forms */
+.card-box {
+  border: 1px solid #94a3b8;
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+.field-group {
+  margin-bottom: 1.25rem;
+}
+.field-group label {
+  display: block;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #94a3b8;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Buttons */
+.button-row {
+  display: flex;
+  gap: 1rem;
+}
+.btn-dark {
+  background: #334155;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.btn-light {
+  background: #e2e8f0;
+  color: #0f172a;
+  border: 1px solid #94a3b8;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Results / List Items */
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  margin-top: 0.75rem;
+  background: #fff;
+}
+.tasks-heading {
+  font-weight: bold;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+.tasks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.task-card {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 1.25rem;
+  cursor: pointer;
+}
+.task-card:hover {
+  background: #f8fafc;
+}
+.task-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+.task-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+/* Alert Banner */
+.alert-box {
+  background: #fef3c7;
+  border: 1px solid #d97706;
+  border-left: 6px solid #b45309;
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+}
+.faq-item {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 0;
+  cursor: pointer;
+}
+.faq-question {
+  font-weight: bold;
+}
+.faq-answer {
+  display: none;
+  margin-top: 0.5rem;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid #cbd5e1;
+  padding: 1.25rem 1.5rem;
+  font-size: 0.85rem;
+  color: #475569;
+}
