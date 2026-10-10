@@ -29,7 +29,9 @@ function loadConfig(overrides = {}) {
     timezone: env.COASTLINK_TIMEZONE || "Australia/Sydney",
     dataFile:
       env.COASTLINK_DATA_FILE ||
-      path.join(rootDirectory, "data", "coastlink.json"),
+      (env.VERCEL
+        ? "/tmp/coastlink.json"
+        : path.join(rootDirectory, "data", "coastlink.json")),
     distDirectory: path.join(rootDirectory, "dist"),
     auth: {
       email: env.COASTLINK_AUTH_EMAIL || "resident@example.com",

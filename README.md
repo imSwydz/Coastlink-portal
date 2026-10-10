@@ -13,19 +13,19 @@ directly, and report maintenance issues with a trackable ticket.
 
 ## Features
 
-| Feature | What it does |
-| --- | --- |
-| Sign in | Demo resident account with a session cookie; booking, report and notification data is private to the signed-in resident |
-| Facility search | Live filtering by keyword (name, type, suburb, amenity), suburb, type and capacity |
-| Availability | Choose a date and every result shows Available, Booked or Closed |
-| Booking | Booked from the results; double bookings and closed dates are rejected; dates limited to today up to 6 months ahead |
-| My Bookings | Upcoming and past bookings, cancel with a confirm step, refund-by date shown |
-| Report a Problem | Form with all facilities and categories from the server; returns a ticket ID |
-| My reports | Ticket list with a status tracker (Received, Triaged, In progress, Resolved) that updates automatically |
-| Notifications | Saved on the server: booking confirmed or cancelled, ticket received and status changes |
-| Closure notices | Shown from data, not hard-coded text |
-| Dashboard | Upcoming bookings, open reports and facility count at a glance |
-| Help / FAQ | Searchable, collapsible questions |
+| Feature          | What it does                                                                                                            |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Sign in          | Demo resident account with a session cookie; booking, report and notification data is private to the signed-in resident |
+| Facility search  | Live filtering by keyword (name, type, suburb, amenity), suburb, type and capacity                                      |
+| Availability     | Choose a date and every result shows Available, Booked or Closed                                                        |
+| Booking          | Booked from the results; double bookings and closed dates are rejected; dates limited to today up to 6 months ahead     |
+| My Bookings      | Upcoming and past bookings, cancel with a confirm step, refund-by date shown                                            |
+| Report a Problem | Form with all facilities and categories from the server; returns a ticket ID                                            |
+| My reports       | Ticket list with a status tracker (Received, Triaged, In progress, Resolved) that updates automatically                 |
+| Notifications    | Saved on the server: booking confirmed or cancelled, ticket received and status changes                                 |
+| Closure notices  | Shown from data, not hard-coded text                                                                                    |
+| Dashboard        | Upcoming bookings, open reports and facility count at a glance                                                          |
+| Help / FAQ       | Searchable, collapsible questions                                                                                       |
 
 > **Demo behaviour:** there is no staff back office yet, so ticket statuses advance
 > automatically with time (about 20s, 60s and 150s after submitting). Turn this off with
@@ -52,26 +52,40 @@ npm start
 Open http://localhost:3000 and sign in (details are pre-filled):
 `resident@example.com` / `coastlink-demo`.
 
-| Command | What it does |
-| --- | --- |
-| `npm start` | Type-check, build the front end into `dist/`, then start the server |
-| `npm run dev` | Development: API on :3000 plus the Vite dev server with hot reload (open the URL Vite prints, then `/home.html`) |
-| `npm run build` | Type-check and build only |
-| `npm run serve` | Start the server without rebuilding |
-| `npm test` | Run the API tests |
+| Command         | What it does                                                                                                     |
+| --------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `npm start`     | Type-check, build the front end into `dist/`, then start the server                                              |
+| `npm run dev`   | Development: API on :3000 plus the Vite dev server with hot reload (open the URL Vite prints, then `/home.html`) |
+| `npm run build` | Type-check and build only                                                                                        |
+| `npm run serve` | Start the server without rebuilding                                                                              |
+| `npm test`      | Run the API tests                                                                                                |
 
 ### Settings (environment variables)
 
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `PORT` | `3000` | Server port |
-| `COASTLINK_AUTH_EMAIL` / `COASTLINK_AUTH_PASSWORD` | `resident@example.com` / `coastlink-demo` | Demo login |
-| `COASTLINK_TIMEZONE` | `Australia/Sydney` | Decides what "today" is for booking rules |
-| `COASTLINK_DATA_FILE` | `data/coastlink.json` | Where data is saved |
-| `COASTLINK_TICKET_SIMULATION` | on | Set to `off` to stop tickets advancing on their own |
+| Variable                                           | Default                                   | Purpose                                             |
+| -------------------------------------------------- | ----------------------------------------- | --------------------------------------------------- |
+| `PORT`                                             | `3000`                                    | Server port                                         |
+| `COASTLINK_AUTH_EMAIL` / `COASTLINK_AUTH_PASSWORD` | `resident@example.com` / `coastlink-demo` | Demo login                                          |
+| `COASTLINK_TIMEZONE`                               | `Australia/Sydney`                        | Decides what "today" is for booking rules           |
+| `COASTLINK_DATA_FILE`                              | `data/coastlink.json`                     | Where data is saved                                 |
+| `COASTLINK_TICKET_SIMULATION`                      | on                                        | Set to `off` to stop tickets advancing on their own |
 
 To reset the data, stop the server and delete `data/coastlink.json`.
 Booking rules (6 months ahead, refund days, and so on) are in `src/server/config.js`.
+
+## Deploying to Vercel
+
+Import the GitHub repository into Vercel and deploy with the default build settings
+from `vercel.json`. Optionally set `COASTLINK_AUTH_EMAIL` and
+`COASTLINK_AUTH_PASSWORD` in the project environment variables to change the demo
+login.
+
+Vercel's function filesystem is read-only except for temporary storage, so the JSON
+data file uses `/tmp` when running there. Data can reset when an instance restarts,
+and separate instances do not share bookings or reports. Sessions are also held in
+memory, so a resident may need to sign in again if a request reaches another
+instance. This setup is suitable for a demo; production use needs shared persistent
+storage and a shared session store.
 
 ## Project structure
 
@@ -108,22 +122,22 @@ To add a feature, add a route in `src/server/routes`, a matching function in
 
 Routes marked **auth** need a signed-in session. Residents only ever see their own data.
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `POST` | `/api/auth/login`, `/api/auth/logout` | Sign in or out |
-| `GET` | `/api/auth/me` | Current session |
-| `GET` | `/api/config` | Booking window, report categories and statuses |
-| `GET` | `/api/announcements` | Current and upcoming closures |
-| `GET` | `/api/facilities` | List; filter by `q`, `suburb`, `type`, `minCapacity`; add `date` to get `available` |
-| `GET` | `/api/facilities/:id` | One facility |
-| `GET` | `/api/facilities/:id/availability` | Booked dates and closures |
-| `GET`, `POST` | `/api/bookings` | **auth** List own bookings; create (`facility`, `date`). `409` if booked or closed |
-| `DELETE` | `/api/bookings/:id` | **auth** Cancel own booking |
-| `GET`, `POST` | `/api/reports` | **auth** List own reports; submit (`facility`, `category`, `details`) |
-| `GET` | `/api/reports/:ticketId` | **auth** One report with status |
-| `GET` | `/api/notifications` | **auth** Own notifications |
-| `POST` | `/api/notifications/read` | **auth** Mark all as read |
-| `GET` | `/api/health` | Health check |
+| Method        | Endpoint                              | Description                                                                         |
+| ------------- | ------------------------------------- | ----------------------------------------------------------------------------------- |
+| `POST`        | `/api/auth/login`, `/api/auth/logout` | Sign in or out                                                                      |
+| `GET`         | `/api/auth/me`                        | Current session                                                                     |
+| `GET`         | `/api/config`                         | Booking window, report categories and statuses                                      |
+| `GET`         | `/api/announcements`                  | Current and upcoming closures                                                       |
+| `GET`         | `/api/facilities`                     | List; filter by `q`, `suburb`, `type`, `minCapacity`; add `date` to get `available` |
+| `GET`         | `/api/facilities/:id`                 | One facility                                                                        |
+| `GET`         | `/api/facilities/:id/availability`    | Booked dates and closures                                                           |
+| `GET`, `POST` | `/api/bookings`                       | **auth** List own bookings; create (`facility`, `date`). `409` if booked or closed  |
+| `DELETE`      | `/api/bookings/:id`                   | **auth** Cancel own booking                                                         |
+| `GET`, `POST` | `/api/reports`                        | **auth** List own reports; submit (`facility`, `category`, `details`)               |
+| `GET`         | `/api/reports/:ticketId`              | **auth** One report with status                                                     |
+| `GET`         | `/api/notifications`                  | **auth** Own notifications                                                          |
+| `POST`        | `/api/notifications/read`             | **auth** Mark all as read                                                           |
+| `GET`         | `/api/health`                         | Health check                                                                        |
 
 ## Known limitations
 
@@ -143,10 +157,10 @@ Routes marked **auth** need a signed-in session. Residents only ever see their o
 
 ## Team LFL
 
-| Name | Role |
-| --- | --- |
-| Kasparas Jancys | Project manager |
-| Sadi Hasan | QA tester |
-| Syed Hussain | UI/UX Designer |
-| Swapnil Bhowmik | Lead Developer |
-| Archie Small | Technical writer |
+| Name            | Role             |
+| --------------- | ---------------- |
+| Kasparas Jancys | Project manager  |
+| Sadi Hasan      | QA tester        |
+| Syed Hussain    | UI/UX Designer   |
+| Swapnil Bhowmik | Lead Developer   |
+| Archie Small    | Technical writer |
