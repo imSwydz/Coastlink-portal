@@ -2,3 +2,8 @@ node_modules/
 dist/
 .DS_Store
 *.log
+.env
+
+# Runtime data is created on first launch; don't commit local bookings.
+data/*.json
+data/*.tmp

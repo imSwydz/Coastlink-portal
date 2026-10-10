@@ -1,0 +1,21 @@
+{
+  "name": "coastlink-portal",
+  "version": "0.1.0",
+  "description": "Prototype backend for CoastLink Council's facility booking and maintenance system",
+  "main": "server.js",
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "start": "npm run build && node server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "express": "^4.22.2",
+    "nsw-design-system": "^3.27.0"
+  },
+  "devDependencies": {
+    "sass": "^1.104.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
+  }
+}

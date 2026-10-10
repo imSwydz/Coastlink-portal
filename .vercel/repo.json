@@ -1,0 +1,11 @@
+{
+  "remoteName": "origin",
+  "projects": [
+    {
+      "id": "prj_u3MpFhfGMciBoD4ubAQ2tMHzqmmm",
+      "name": "coastlink-portal",
+      "directory": ".",
+      "orgId": "team_fggUyIzfVzg2OqDnzsj6uROh"
+    }
+  ]
+}
