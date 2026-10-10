@@ -7,5 +7,6 @@
       "destination": "/home.html",
       "permanent": false
     }
-  ]
+  ],
+  "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }]
 }
