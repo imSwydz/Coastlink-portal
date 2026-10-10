@@ -1,15 +1,21 @@
 import { defineConfig } from "vite";
 
+// The front end lives in src/client. `npm run build` writes it to dist/,
+// which the Express server then serves.
 export default defineConfig({
-  root: "public",
+  root: "src/client",
   build: {
-    outDir: "../dist",
+    outDir: "../../dist",
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        portal: "public/index.html",
-        home: "public/home.html",
+        portal: "src/client/index.html",
+        home: "src/client/home.html",
       },
     },
+  },
+  server: {
+    // `npm run dev`: the Vite dev server forwards API calls to Express.
+    proxy: { "/api": "http://localhost:3000" },
   },
 });

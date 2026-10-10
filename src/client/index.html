@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CoastLink Council - Facility Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Icons&family=Public+Sans:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="window" id="appWindow">
+      <header>
+        <div class="brand">
+          <div class="logo-box">
+            <img src="/coastlink-logo.svg" alt="CoastLink logo" />
+          </div>
+          <div class="brand-text">
+            <h1>CoastLink Council</h1>
+            <p>Facility bookings and maintenance</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <span class="portal-identity">
+            <span class="user-avatar" id="portalAvatar" aria-hidden="true"
+              >R</span
+            >
+            <span class="portal-user" id="portalUser"></span>
+          </span>
+          <div class="notification-area">
+            <button
+              class="notification-button"
+              id="notificationButton"
+              type="button"
+              aria-label="Notifications"
+              aria-expanded="false"
+              aria-controls="notificationDropdown"
+            >
+              &#128276;<span
+                id="notificationBadge"
+                class="notification-badge"
+                hidden
+                >0</span
+              >
+            </button>
+            <div id="notificationDropdown" class="notification-dropdown" hidden>
+              <h2 class="notification-heading">Notifications</h2>
+              <div id="notificationList"></div>
+            </div>
+          </div>
+          <button
+            class="auth-logout portal-logout"
+            id="logoutButton"
+            type="button"
+          >
+            Sign out
+          </button>
+        </div>
+      </header>
+
+      <nav class="nsw-tabs" aria-label="Portal sections">
+        <ul class="nsw-tabs__list">
+          <li>
+            <a
+              id="tab-link-book"
+              class="nsw-tabs__link active"
+              href="#tab-book"
+              data-tab="tab-book"
+              >Book a facility</a
+            >
+          </li>
+          <li>
+            <a
+              id="tab-link-bookings"
+              class="nsw-tabs__link"
+              href="#tab-bookings"
+              data-tab="tab-bookings"
+              >My bookings</a
+            >
+          </li>
+          <li>
+            <a
+              id="tab-link-report"
+              class="nsw-tabs__link"
+              href="#tab-report"
+              data-tab="tab-report"
+              >Report a problem</a
+            >
+          </li>
+          <li>
+            <a
+              id="tab-link-help"
+              class="nsw-tabs__link"
+              href="#tab-help"
+              data-tab="tab-help"
+              >Help</a
+            >
+          </li>
+        </ul>
+      </nav>
+
+      <main>
+        <section id="tab-book" class="tab-content active">
+          <h2 class="page-title">Book a Council facility</h2>
+          <p class="subtitle">
+            Halls, meeting rooms, sports courts and community equipment.
+          </p>
+          <div id="announcements" class="announcements" hidden></div>
+          <section id="summaryStrip" class="summary-strip" aria-label="Your account at a glance" hidden>
+            <h3 id="summaryWelcome" class="summary-welcome"></h3>
+            <div class="summary-grid">
+              <button type="button" class="summary-card" data-switch-tab="tab-bookings">
+                <span class="summary-value" id="summaryBookings">0</span>
+                <span class="summary-label">Upcoming bookings</span>
+                <span class="summary-note" id="summaryNext"></span>
+              </button>
+              <button type="button" class="summary-card" data-switch-tab="tab-report">
+                <span class="summary-value" id="summaryReports">0</span>
+                <span class="summary-label">Open reports</span>
+                <span class="summary-note" id="summaryReportsNote"></span>
+              </button>
+              <div class="summary-card summary-card--static">
+                <span class="summary-value" id="summaryFacilities">0</span>
+                <span class="summary-label">Facilities to choose from</span>
+                <span class="summary-note">Halls, rooms, courts and more</span>
+              </div>
+            </div>
+          </section>
+          <form id="searchForm" class="nsw-form card-box">
+            <div class="nsw-form__group">
+              <label class="nsw-form__label" for="searchInput"
+                >What do you need?</label
+              >
+              <input
+                type="text"
+                id="searchInput"
+                class="nsw-form__input"
+                placeholder="Search halls, rooms, courts..."
+              />
+            </div>
+            <div class="input-row">
+              <div class="nsw-form__group">
+                <label class="nsw-form__label" for="suburbSelect">Suburb</label>
+                <select id="suburbSelect" class="nsw-form__input">
+                  <option value="">Any suburb</option>
+                  <option value="North Beach">North Beach</option>
+                  <option value="Bayview">Bayview</option>
+                  <option value="South Point">South Point</option>
+                </select>
+              </div>
+              <div class="nsw-form__group">
+                <label class="nsw-form__label" for="typeSelect">Type</label>
+                <select id="typeSelect" class="nsw-form__input">
+                  <option value="">Any type</option>
+                  <option value="Hall">Hall</option>
+                  <option value="Room">Room</option>
+                  <option value="Court">Court</option>
+                  <option value="Shelter">Shelter</option>
+                  <option value="Studio">Studio</option>
+                </select>
+              </div>
+              <div class="nsw-form__group">
+                <label
+                  class="nsw-form__label nsw-form__required"
+                  for="dateInput"
+                  >Date</label
+                >
+                <input
+                  type="date"
+                  id="dateInput"
+                  class="nsw-form__input"
+                  required
+                  aria-describedby="dateHint dateError"
+                />
+                <span class="nsw-form__helper" id="dateHint"></span>
+                <span
+                  class="nsw-form__helper nsw-form__helper--error"
+                  id="dateError"
+                  role="alert"
+                  hidden
+                ></span>
+              </div>
+              <div class="nsw-form__group">
+                <label class="nsw-form__label" for="capacitySelect"
+                  >Number of people</label
+                >
+                <select id="capacitySelect" class="nsw-form__input">
+                  <option value="0">Any size</option>
+                  <option value="20">20 or more</option>
+                  <option value="50">50 or more</option>
+                  <option value="100">100 or more</option>
+                </select>
+              </div>
+            </div>
+            <div class="button-row">
+              <button
+                type="submit"
+                class="nsw-button nsw-button--dark"
+                id="searchButton"
+              >
+                Search facilities
+              </button>
+              <button
+                type="button"
+                class="nsw-button nsw-button--light-outline"
+                id="showAllBtn"
+              >
+                Show all facilities
+              </button>
+            </div>
+          </form>
+          <div id="resultsSection" hidden>
+            <div class="tasks-heading">Search Results</div>
+            <p id="resultsCount" class="results-count" aria-live="polite"></p>
+            <p id="availabilityHint" class="results-count availability-hint"></p>
+            <div
+              id="resultsLoading"
+              class="results-loading"
+              hidden
+              aria-live="polite"
+            >
+              Loading facilities...
+            </div>
+            <div id="resultsContainer"></div>
+          </div>
+          <div class="tasks-heading">Or start from a common task</div>
+          <div class="tasks-grid">
+            <button
+              class="task-card nsw-card"
+              type="button"
+              data-quick-type="Hall"
+            >
+              <span class="nsw-card__content"
+                ><h3>Book a community hall</h3>
+                <p>For meetings, parties and classes.</p></span
+              >
+            </button>
+            <button
+              class="task-card nsw-card"
+              type="button"
+              data-switch-tab="tab-report"
+            >
+              <span class="nsw-card__content"
+                ><h3>Report a problem</h3>
+                <p>Broken lights, taps, doors or equipment.</p></span
+              >
+            </button>
+            <button
+              class="task-card nsw-card"
+              type="button"
+              data-switch-tab="tab-bookings"
+            >
+              <span class="nsw-card__content"
+                ><h3>Check a booking</h3>
+                <p>View, change or cancel what you booked.</p></span
+              >
+            </button>
+          </div>
+        </section>
+
+        <section id="tab-bookings" class="tab-content" hidden>
+          <h2 class="page-title">My Bookings</h2>
+          <p class="subtitle">Review and manage your current reservations.</p>
+          <div id="bookingsList"></div>
+        </section>
+
+        <section id="tab-report" class="tab-content" hidden>
+          <h2 class="page-title">Report a Problem</h2>
+          <p class="subtitle">
+            Notify the council of broken lights, equipment, or facility issues.
+          </p>
+          <form id="reportForm" class="nsw-form card-box">
+            <div class="nsw-form__group">
+              <label class="nsw-form__label" for="reportFacility"
+                >Select Facility</label
+              ><select
+                id="reportFacility"
+                class="nsw-form__input"
+                required
+                aria-describedby="reportFacilityError"
+              >
+                <option value="">Choose a facility...</option>
+                <option value="Bayview Community Hall">
+                  Bayview Community Hall
+                </option>
+                <option value="North Beach Activity Room">
+                  North Beach Activity Room
+                </option>
+                <option value="South Point Tennis Court">
+                  South Point Tennis Court
+                </option>
+                <option value="Civic Pavilion">Civic Pavilion</option>
+              </select>
+              <span
+                class="nsw-form__helper nsw-form__helper--error"
+                id="reportFacilityError"
+                role="alert"
+                hidden
+              ></span>
+            </div>
+            <div class="nsw-form__group">
+              <label class="nsw-form__label" for="reportType"
+                >Issue Category</label
+              ><select
+                id="reportType"
+                class="nsw-form__input"
+                required
+                aria-describedby="reportTypeError"
+              >
+                <option value="">Choose a category...</option>
+                <option value="Electrical / Lighting">
+                  Electrical / Lighting
+                </option>
+                <option value="Plumbing / Taps">Plumbing / Taps</option>
+                <option value="Locks / Access">Locks / Access</option>
+                <option value="Cleaning / Damage">Cleaning / Damage</option>
+              </select>
+              <span
+                class="nsw-form__helper nsw-form__helper--error"
+                id="reportTypeError"
+                role="alert"
+                hidden
+              ></span>
+            </div>
+            <div class="nsw-form__group">
+              <label class="nsw-form__label" for="reportDetails">Details</label
+              ><textarea
+                id="reportDetails"
+                class="nsw-form__input"
+                placeholder="Describe the issue in detail..."
+                required
+                aria-describedby="reportDetailsError reportCounter"
+              ></textarea
+              ><span class="char-counter" id="reportCounter"></span
+              ><span
+                class="nsw-form__helper nsw-form__helper--error"
+                id="reportDetailsError"
+                role="alert"
+                hidden
+              ></span>
+            </div>
+            <button
+              type="submit"
+              class="nsw-button nsw-button--dark"
+              id="reportSubmitButton"
+            >
+              Submit Report
+            </button>
+          </form>
+          <h3 class="tasks-heading">My reports</h3>
+          <div id="reportsList" aria-live="polite"></div>
+        </section>
+
+        <section id="tab-help" class="tab-content" hidden>
+          <h2 class="page-title">Frequently Asked Questions</h2>
+          <p class="subtitle">
+            Find answers to common questions about using Council spaces.
+          </p>
+          <div class="nsw-form__group faq-search">
+            <label class="nsw-form__label" for="faqSearch">Search the FAQ</label>
+            <input id="faqSearch" type="search" class="nsw-form__input" placeholder="e.g. insurance, refund, cancel" />
+          </div>
+          <p id="faqEmpty" class="empty-message" hidden>No questions match your search. Call us on (02) 4200 0000.</p>
+          <button class="faq-item" type="button">
+            <div class="faq-question">
+              &#9656; How far in advance can I make a reservation?
+            </div>
+            <div class="faq-answer">
+              Bookings open up to 6 months in advance. Minimum booking notice is
+              48 business hours.
+            </div>
+          </button>
+          <button class="faq-item" type="button">
+            <div class="faq-question">
+              &#9656; Do I need insurance to book a venue?
+            </div>
+            <div class="faq-answer">
+              Commercial users and public events require Public Liability
+              Insurance (minimum $20M). Private events usually do not.
+            </div>
+          </button>
+          <button class="faq-item" type="button">
+            <div class="faq-question">
+              &#9656; What is the cancellation policy?
+            </div>
+            <div class="faq-answer">
+              Full refunds are provided for cancellations made at least 7 days
+              prior to the booking date.
+            </div>
+          </button>
+        </section>
+      </main>
+
+      <footer>
+        <span
+          ><strong>Need help?</strong> Phone (02) 4200 0000, Monday to Friday
+          8:30am–4:30pm</span
+        >
+      </footer>
+    </div>
+    <div
+      id="toastContainer"
+      class="toast-container"
+      role="status"
+      aria-live="polite"
+    ></div>
+    <script type="module" src="/src/portal.ts"></script>
+  </body>
+</html>

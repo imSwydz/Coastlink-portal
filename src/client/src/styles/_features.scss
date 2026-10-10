@@ -1,0 +1,75 @@
+// Added on top of base styles: dashboard strip, tags, availability,
+// bookings, reports, skeleton loading, FAQ search.
+:root {
+  --color-navy: var(--navy);
+  --color-teal: var(--teal);
+  --color-navy-tint: #e8eff6;
+  --success: #067a53;
+  --success-soft: #e4f8f2;
+}
+
+.announcements { display: grid; gap: .75rem; margin-bottom: 1.75rem; }
+.announcements[hidden] { display: none; }
+
+.summary-strip { margin-bottom: 2rem; }
+.summary-welcome { margin: 0 0 .75rem; color: var(--navy); font-size: 1.1rem; }
+.summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.summary-card { display: flex; flex-direction: column; gap: .15rem; padding: 1rem 1.15rem; border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(160deg, #fff, var(--teal-soft)); color: var(--ink); text-align: left; transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease; }
+button.summary-card:hover { border-color: #79aaa9; box-shadow: 0 8px 18px rgb(18 59 93 / 10%); transform: translateY(-2px); }
+.summary-card--static { cursor: default; }
+.summary-value { color: var(--navy); font-size: 2rem; font-weight: 700; line-height: 1.1; }
+.summary-label { color: var(--navy); font-size: .875rem; font-weight: 700; }
+.summary-note { color: var(--ink-muted); font-size: .8rem; }
+
+@media (min-width: 701px) {
+  .input-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.nsw-form__helper { display: block; margin-top: .3rem; color: var(--ink-muted); font-size: .78rem; }
+.nsw-form__helper--error { color: var(--danger); }
+.availability-hint { margin-top: -.4rem; }
+
+#resultsContainer { grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+.facility-info { min-width: 0; }
+.facility-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .5rem; }
+.tag { display: inline-block; padding: .1rem .5rem; border-radius: 999px; background: var(--surface-muted); border: 1px solid var(--line); color: var(--ink-muted); font-size: .72rem; font-weight: 600; }
+.tag--type { background: var(--teal-soft); border-color: #a9d8cf; color: var(--teal-dark); }
+.availability { display: inline-block; margin-top: .5rem; padding: .1rem .55rem; border-radius: 999px; font-size: .75rem; font-weight: 700; }
+.availability--yes { background: var(--success-soft); color: var(--success); }
+.availability--no { background: #fff0ee; color: var(--danger); }
+.facility-card.is-unavailable { background: var(--surface-muted); }
+.facility-card.is-unavailable strong { color: var(--ink-muted); }
+
+.skeleton { min-height: 118px; background: linear-gradient(90deg, #eef3f4 25%, #f8fbfb 50%, #eef3f4 75%); background-size: 200% 100%; animation: shimmer 1.2s linear infinite; }
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+#bookingsList { display: grid; gap: .75rem; }
+#bookingsList .tasks-heading { margin: 1rem 0 0; }
+.booking-card.is-past { opacity: .75; }
+.booking-actions { display: flex; flex-wrap: wrap; gap: .5rem; flex: 0 0 auto; }
+.empty-state { display: grid; justify-items: start; gap: .75rem; }
+.empty-state p { margin: 0; }
+
+.char-counter { display: block; margin-top: .3rem; color: var(--ink-muted); font-size: .75rem; text-align: right; }
+#reportsList { display: grid; gap: .75rem; }
+.report-card { padding: 1rem 1.15rem; }
+.report-head { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+.report-head strong { color: var(--navy); }
+.report-details { margin: .6rem 0 .9rem; color: var(--ink); font-size: .9rem; overflow-wrap: anywhere; }
+.status { padding: .15rem .6rem; border-radius: 999px; font-size: .75rem; font-weight: 700; background: var(--surface-muted); color: var(--ink-muted); }
+.status--received { background: var(--navy-tint, #e8eff6); color: var(--navy); }
+.status--triaged { background: var(--warning-soft); color: var(--warning); }
+.status--in-progress { background: var(--teal-soft); color: var(--teal-dark); }
+.status--resolved { background: var(--success-soft); color: var(--success); }
+.progress { display: grid; grid-template-columns: repeat(4, 1fr); gap: .35rem; margin: 0; padding: 0; list-style: none; }
+.progress li { padding-top: .45rem; border-top: 4px solid var(--line); color: var(--ink-muted); font-size: .72rem; font-weight: 600; }
+.progress li.done { border-top-color: var(--teal); color: var(--teal-dark); }
+
+.notification-time { display: block; margin-top: .15rem; color: var(--ink-muted); font-size: .72rem; }
+.faq-search { max-width: 26rem; }
+.faq-item[hidden] { display: none; }
+
+@media (max-width: 700px) {
+  .summary-grid { grid-template-columns: 1fr; }
+  .booking-actions { width: 100%; }
+  .booking-actions .nsw-button { flex: 1; }
+}

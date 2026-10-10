@@ -1,11 +1,15 @@
 {
   "name": "coastlink-portal",
   "version": "0.1.0",
-  "description": "Prototype backend for CoastLink Council's facility booking and maintenance system",
-  "main": "server.js",
+  "description": "CoastLink Council facility booking and maintenance portal (prototype)",
+  "main": "src/server/index.js",
   "scripts": {
+    "dev": "concurrently -k -n api,web \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "node --watch src/server/index.js",
+    "dev:client": "vite",
     "build": "tsc --noEmit && vite build",
-    "start": "npm run build && node server.js",
+    "serve": "node src/server/index.js",
+    "start": "npm run build && node src/server/index.js",
     "test": "node --test"
   },
   "dependencies": {
@@ -15,6 +19,7 @@
   "devDependencies": {
     "sass": "^1.104.1",
     "typescript": "^7.0.2",
-    "vite": "^8.3.0"
+    "vite": "^8.3.0",
+    "concurrently": "^9.0.0"
   }
 }
