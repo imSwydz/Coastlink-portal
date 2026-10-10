@@ -113,6 +113,23 @@ test("requires authentication for bookings", async (t) => {
   assert.equal(response.response.status, 401);
 });
 
+test("session cookies work across app instances", async (t) => {
+  const loginInstance = await createTestServer();
+  const followUpInstance = await createTestServer();
+  t.after(() => {
+    loginInstance.server.close();
+    followUpInstance.server.close();
+  });
+
+  const cookie = await authenticate(loginInstance);
+  const bookings = await request(
+    followUpInstance,
+    "/api/bookings",
+    authed(cookie, "GET"),
+  );
+  assert.equal(bookings.response.status, 200);
+});
+
 test("filters facilities by type and flags availability for a date", async (t) => {
   const server = await createTestServer();
   t.after(() => server.server.close());
@@ -166,16 +183,27 @@ test("prevents double bookings and bookings on closed dates", async (t) => {
   const date = daysFromNow(20);
   const payload = { facility: "Seabreeze Sports Hall", date };
 
-  const first = await request(server, "/api/bookings", authed(cookie, "POST", payload));
+  const first = await request(
+    server,
+    "/api/bookings",
+    authed(cookie, "POST", payload),
+  );
   assert.equal(first.response.status, 201);
-  const second = await request(server, "/api/bookings", authed(cookie, "POST", payload));
+  const second = await request(
+    server,
+    "/api/bookings",
+    authed(cookie, "POST", payload),
+  );
   assert.equal(second.response.status, 409);
 
   const closureDate = server.database.closures[0].startDate;
   const closed = await request(
     server,
     "/api/bookings",
-    authed(cookie, "POST", { facility: "Bayview Community Hall", date: closureDate }),
+    authed(cookie, "POST", {
+      facility: "Bayview Community Hall",
+      date: closureDate,
+    }),
   );
   assert.equal(closed.response.status, 409);
   assert.match(closed.body.error, /closed/);
@@ -189,14 +217,20 @@ test("enforces the booking window (no past dates, max 6 months)", async (t) => {
   const past = await request(
     server,
     "/api/bookings",
-    authed(cookie, "POST", { facility: "Civic Pavilion", date: daysFromNow(-1) }),
+    authed(cookie, "POST", {
+      facility: "Civic Pavilion",
+      date: daysFromNow(-1),
+    }),
   );
   assert.equal(past.response.status, 400);
 
   const tooFar = await request(
     server,
     "/api/bookings",
-    authed(cookie, "POST", { facility: "Civic Pavilion", date: daysFromNow(400) }),
+    authed(cookie, "POST", {
+      facility: "Civic Pavilion",
+      date: daysFromNow(400),
+    }),
   );
   assert.equal(tooFar.response.status, 400);
 
@@ -225,7 +259,11 @@ test("bookings belong to the resident who made them", async (t) => {
   assert.ok(list.body.every((b) => b.owner === "resident@example.com"));
   assert.ok(!list.body.some((b) => b.id === 50));
 
-  const cancel = await request(server, "/api/bookings/50", authed(cookie, "DELETE"));
+  const cancel = await request(
+    server,
+    "/api/bookings/50",
+    authed(cookie, "DELETE"),
+  );
   assert.equal(cancel.response.status, 404);
 });
 
@@ -270,7 +308,9 @@ test("reports are listed per resident with a status", async (t) => {
 
 test("ticket status advances over time and notifies the resident", async (t) => {
   const server = await createTestServer({
-    config: { reports: { simulateProgress: true, progressAfterSeconds: [1, 2, 3] } },
+    config: {
+      reports: { simulateProgress: true, progressAfterSeconds: [1, 2, 3] },
+    },
   });
   t.after(() => server.server.close());
   const cookie = await authenticate(server);
@@ -284,12 +324,18 @@ test("ticket status advances over time and notifies the resident", async (t) => 
       details: "Side door will not lock.",
     }),
   );
-  server.database.reports[0].createdAt = new Date(Date.now() - 10000).toISOString();
+  server.database.reports[0].createdAt = new Date(
+    Date.now() - 10000,
+  ).toISOString();
 
   const list = await request(server, "/api/reports", authed(cookie, "GET"));
   assert.equal(list.body[0].status, "Resolved");
 
-  const notes = await request(server, "/api/notifications", authed(cookie, "GET"));
+  const notes = await request(
+    server,
+    "/api/notifications",
+    authed(cookie, "GET"),
+  );
   assert.ok(notes.body.some((n) => /resolved/i.test(n.message)));
 });
 
@@ -301,15 +347,30 @@ test("notifications are created by actions and can be marked read", async (t) =>
   await request(
     server,
     "/api/bookings",
-    authed(cookie, "POST", { facility: "Civic Pavilion", date: daysFromNow(25) }),
+    authed(cookie, "POST", {
+      facility: "Civic Pavilion",
+      date: daysFromNow(25),
+    }),
   );
-  const before = await request(server, "/api/notifications", authed(cookie, "GET"));
+  const before = await request(
+    server,
+    "/api/notifications",
+    authed(cookie, "GET"),
+  );
   assert.equal(before.body.length, 1);
   assert.equal(before.body[0].read, false);
 
-  const marked = await request(server, "/api/notifications/read", authed(cookie, "POST"));
+  const marked = await request(
+    server,
+    "/api/notifications/read",
+    authed(cookie, "POST"),
+  );
   assert.equal(marked.response.status, 204);
-  const after = await request(server, "/api/notifications", authed(cookie, "GET"));
+  const after = await request(
+    server,
+    "/api/notifications",
+    authed(cookie, "GET"),
+  );
   assert.equal(after.body[0].read, true);
 
   const anonymous = await request(server, "/api/notifications");
@@ -324,11 +385,16 @@ test("announcements list upcoming closures", async (t) => {
   assert.equal(result.body[0].facility, "Bayview Community Hall");
 });
 
-test("login locks out repeated failures and logout ends the session", async (t) => {
-  const server = await createTestServer({ config: { auth: { maxFailedLogins: 3 } } });
+test("login locks out repeated failures and logout clears the session cookie", async (t) => {
+  const server = await createTestServer({
+    config: { auth: { maxFailedLogins: 3 } },
+  });
   t.after(() => server.server.close());
-  const bad = { method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: "resident@example.com", password: "wrong" }) };
+  const bad = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: "resident@example.com", password: "wrong" }),
+  };
 
   for (let i = 0; i < 3; i += 1) {
     const attempt = await request(server, "/api/auth/login", bad);
@@ -340,9 +406,14 @@ test("login locks out repeated failures and logout ends the session", async (t) 
   const other = await createTestServer();
   t.after(() => other.server.close());
   const cookie = await authenticate(other);
-  await request(other, "/api/auth/logout", authed(cookie, "POST"));
-  const afterLogout = await request(other, "/api/bookings", authed(cookie, "GET"));
-  assert.equal(afterLogout.response.status, 401);
+  const logout = await request(
+    other,
+    "/api/auth/logout",
+    authed(cookie, "POST"),
+  );
+  assert.match(logout.response.headers.get("set-cookie"), /Max-Age=0/);
+  const anonymous = await request(other, "/api/bookings");
+  assert.equal(anonymous.response.status, 401);
 });
 
 test("returns JSON errors for bad bodies and unknown API routes", async (t) => {

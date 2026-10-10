@@ -36,6 +36,9 @@ function loadConfig(overrides = {}) {
     auth: {
       email: env.COASTLINK_AUTH_EMAIL || "resident@example.com",
       password: env.COASTLINK_AUTH_PASSWORD || "coastlink-demo",
+      sessionSecret:
+        env.COASTLINK_SESSION_SECRET ||
+        "coastlink-development-session-secret-change-in-production",
       sessionTtlMs: 8 * 60 * 60 * 1000,
       maxFailedLogins: 10,
       lockoutMs: 15 * 60 * 1000,

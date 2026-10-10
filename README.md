@@ -62,13 +62,14 @@ Open http://localhost:3000 and sign in (details are pre-filled):
 
 ### Settings (environment variables)
 
-| Variable                                           | Default                                   | Purpose                                             |
-| -------------------------------------------------- | ----------------------------------------- | --------------------------------------------------- |
-| `PORT`                                             | `3000`                                    | Server port                                         |
-| `COASTLINK_AUTH_EMAIL` / `COASTLINK_AUTH_PASSWORD` | `resident@example.com` / `coastlink-demo` | Demo login                                          |
-| `COASTLINK_TIMEZONE`                               | `Australia/Sydney`                        | Decides what "today" is for booking rules           |
-| `COASTLINK_DATA_FILE`                              | `data/coastlink.json`                     | Where data is saved                                 |
-| `COASTLINK_TICKET_SIMULATION`                      | on                                        | Set to `off` to stop tickets advancing on their own |
+| Variable                                           | Default                                   | Purpose                                               |
+| -------------------------------------------------- | ----------------------------------------- | ----------------------------------------------------- |
+| `PORT`                                             | `3000`                                    | Server port                                           |
+| `COASTLINK_AUTH_EMAIL` / `COASTLINK_AUTH_PASSWORD` | `resident@example.com` / `coastlink-demo` | Demo login                                            |
+| `COASTLINK_SESSION_SECRET`                         | development-only default                  | Signs sessions; set a long random value in production |
+| `COASTLINK_TIMEZONE`                               | `Australia/Sydney`                        | Decides what "today" is for booking rules             |
+| `COASTLINK_DATA_FILE`                              | `data/coastlink.json`                     | Where data is saved                                   |
+| `COASTLINK_TICKET_SIMULATION`                      | on                                        | Set to `off` to stop tickets advancing on their own   |
 
 To reset the data, stop the server and delete `data/coastlink.json`.
 Booking rules (6 months ahead, refund days, and so on) are in `src/server/config.js`.
@@ -76,8 +77,8 @@ Booking rules (6 months ahead, refund days, and so on) are in `src/server/config
 ## Deploying to Vercel
 
 Import the GitHub repository into Vercel and deploy with the default build settings
-from `vercel.json`. Optionally set `COASTLINK_AUTH_EMAIL` and
-`COASTLINK_AUTH_PASSWORD` in the project environment variables to change the demo
+from `vercel.json`. Set `COASTLINK_SESSION_SECRET` to a long random value. You can
+also set `COASTLINK_AUTH_EMAIL` and `COASTLINK_AUTH_PASSWORD` to change the demo
 login.
 
 Vercel's function filesystem is read-only except for temporary storage, so the JSON
@@ -141,7 +142,8 @@ Routes marked **auth** need a signed-in session. Residents only ever see their o
 
 ## Known limitations
 
-- One demo login; passwords are not hashed and sessions are held in memory.
+- One demo login; passwords are not hashed. Signed sessions work across serverless
+  instances but cannot be revoked before they expire.
 - No payments, email or SMS. FAQ policies (insurance, refunds) are text only.
 - Bookings are one date per booking, with no time slots.
 - No staff or admin side; ticket status changes are simulated.

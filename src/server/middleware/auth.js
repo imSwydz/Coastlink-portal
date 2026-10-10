@@ -19,24 +19,58 @@ function readToken(req) {
   return null;
 }
 
+function createSessionToken(email, createdAt, secret) {
+  const payload = Buffer.from(JSON.stringify({ email, createdAt })).toString(
+    "base64url",
+  );
+  const signature = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("base64url");
+  return `${payload}.${signature}`;
+}
+
+function readSession(token, secret, ttlMs) {
+  const [payload, signature, extra] = token.split(".");
+  if (!payload || !signature || extra) return null;
+
+  const expected = crypto.createHmac("sha256", secret).update(payload).digest();
+  const actual = Buffer.from(signature, "base64url");
+  if (
+    actual.length !== expected.length ||
+    !crypto.timingSafeEqual(actual, expected)
+  ) {
+    return null;
+  }
+
+  let session;
+  try {
+    session = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+  } catch {
+    return null;
+  }
+
+  if (
+    typeof session.email !== "string" ||
+    !Number.isSafeInteger(session.createdAt)
+  ) {
+    return null;
+  }
+  const age = Date.now() - session.createdAt;
+  return age >= 0 && age <= ttlMs ? session : null;
+}
+
 /**
- * Session handling for one app instance. Sessions live in memory and expire
- * after config.auth.sessionTtlMs. To scale beyond one server process, swap
- * the `sessions` Map for a shared store (e.g. Redis) without changing callers.
+ * Signed session cookies keep authentication valid across serverless instances.
  */
 function createAuth(config) {
-  const sessions = new Map();
   const failures = new Map();
 
   function getSession(req) {
     const token = readToken(req);
-    const session = token ? sessions.get(token) : null;
-    if (!session) return null;
-    if (Date.now() - session.createdAt > config.auth.sessionTtlMs) {
-      sessions.delete(token);
-      return null;
-    }
-    return session;
+    return token
+      ? readSession(token, config.auth.sessionSecret, config.auth.sessionTtlMs)
+      : null;
   }
 
   function cookie(value, maxAgeSeconds) {
@@ -92,8 +126,11 @@ function createAuth(config) {
       return res.status(401).json({ error: "invalid email or password" });
     }
     failures.delete(req.ip);
-    const token = crypto.randomBytes(32).toString("hex");
-    sessions.set(token, { email, createdAt: Date.now() });
+    const token = createSessionToken(
+      email,
+      Date.now(),
+      config.auth.sessionSecret,
+    );
     res.setHeader(
       "Set-Cookie",
       cookie(token, Math.floor(config.auth.sessionTtlMs / 1000)),
@@ -102,8 +139,6 @@ function createAuth(config) {
   });
 
   router.post("/logout", (req, res) => {
-    const token = readToken(req);
-    if (token) sessions.delete(token);
     res.setHeader("Set-Cookie", cookie("", 0));
     return res.status(204).end();
   });
